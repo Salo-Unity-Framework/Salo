@@ -6,13 +6,13 @@ using System;
 using UnityEngine.AddressableAssets;
 
 [Serializable]
-public class AssetReferenceScene : AssetReference
+public class SceneReference : AssetReference
 {
     /// <summary>
     /// Constructs a new reference to a Scene Asset.
     /// </summary>
     /// <param name="guid">The object guid.</param>
-    public AssetReferenceScene(string guid) : base(guid) { }
+    public SceneReference(string guid) : base(guid) { }
 
     public override bool ValidateAsset(string path)
     {
