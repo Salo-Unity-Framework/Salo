@@ -7,9 +7,9 @@ using UnityEngine.Assertions;
 using UnityEngine.SceneManagement;
 
 /// <summary>
-/// Always load the Bootstrap scene first in Editor Play mode. This ensures
-/// that components can access the bootstrap components during their
-/// initialization. Expecting BootstrapScene at scene index 0.
+/// Always load ZeroScene (and consequently BootstrapScene) first in Editor Play mode.
+/// This ensures that components can access bootstrapped systems. Expecting
+/// ZeroScene to be the first entry on the Scene List
 /// </summary>
 public static class EditorBootstrapper
 {
@@ -39,26 +39,31 @@ public static class EditorBootstrapper
             openScenePaths[i] = SceneManager.GetSceneAt(i).path;
         }
 
-        var openSceneType = getOpenSceneType(openScenePaths);
+        var openSceneType = getOpenSceneType();
 
         // If the active scene is the zero scene, there is nothing to change.
         // ZeroScene should run normally and will load BootstrapScene.
         // Note that this is run on InitializeOnLoadMethod and will
         // take effect on the next Editor Play only.
-        if (openSceneType == OpenSceneType.ZeroScene)
+        switch (openSceneType)
         {
-            EditorSceneManager.playModeStartScene = null;
-            return;
-        }
+            case OpenSceneType.ZeroScene:
+                EditorSceneManager.playModeStartScene = null;
+                break;
 
-        // Set Bootstrap scene to load first
-        EditorSceneManager.playModeStartScene = AssetDatabase.LoadAssetAtPath<SceneAsset>(bootstrapScenePath);
+            case OpenSceneType.BootstrapScene:
+                // Set ZeroScene to load first
+                EditorSceneManager.playModeStartScene = AssetDatabase.LoadAssetAtPath<SceneAsset>(sceneLoadConfig.ZeroScenePath);
+                break;
 
-        // If the open scenes were ZeroScene or BootstrapScene, FirstSceneLoader will.
-        // take over as normal Otherwise EditorBootstrapper will load the open scenes.
-        if (openSceneType == OpenSceneType.Others)
-        {
-            SceneLoadEvents.OnFirstSceneLoadRequested += handleFirstSceneLoadRequested;
+            case OpenSceneType.Others:
+                // Set ZeroScene to load first. Also let EditorBootstrapper load those open scenes in handleFirstSceneLoadRequested
+                EditorSceneManager.playModeStartScene = AssetDatabase.LoadAssetAtPath<SceneAsset>(sceneLoadConfig.ZeroScenePath);
+                SceneLoadEvents.OnFirstSceneLoadRequested += handleFirstSceneLoadRequested;
+                break;
+
+            default:
+                throw new ArgumentException($"Invalid open scene type: {openSceneType}");
         }
     }
 
@@ -69,8 +74,7 @@ public static class EditorBootstrapper
         // Unsubscribe so game restarts will not cause wrong scenes to be loaded here (FirstSceneLoader will take over)
         SceneLoadEvents.OnFirstSceneLoadRequested -= handleFirstSceneLoadRequested;
 
-        Assert.IsNotNull(openScenePaths);
-        Assert.IsTrue(openScenePaths.Length > 0);
+        Assert.IsTrue(openScenePaths?.Length > 0, "No open scenes detected");
 
         // TODO: Fade out
 
@@ -81,11 +85,11 @@ public static class EditorBootstrapper
         SceneLoadEvents.AdditiveLoadRequested(sceneReference);
     }
 
-    private static OpenSceneType getOpenSceneType(string[] openScenePaths)
+    private static OpenSceneType getOpenSceneType()
     {
         if (openScenePaths.Contains(sceneLoadConfig.ZeroScenePath)) return OpenSceneType.ZeroScene;
-        else if (openScenePaths.Contains(bootstrapScenePath)) return OpenSceneType.BootstrapScene;
-        else return OpenSceneType.Others;
+        if (openScenePaths.Contains(bootstrapScenePath)) return OpenSceneType.BootstrapScene;
+        return OpenSceneType.Others;
     }
 
     private static SceneReference getSceneReferenceFromPath(string scenePath)
