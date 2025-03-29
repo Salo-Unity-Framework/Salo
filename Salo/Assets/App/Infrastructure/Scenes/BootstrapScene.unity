@@ -329,6 +329,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ab8cb140e58bb7f458c30f0f720b3c6b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  bootstrapRuntimeData: {fileID: 11400000, guid: 0a13b9a3be46d654b90a7adb634fa8a7, type: 2}
   sceneLoadRuntimeData: {fileID: 11400000, guid: 12fbc3b424cb7e6469b78a0b5468dc90, type: 2}
 --- !u!1 &880968014
 GameObject:
@@ -564,6 +565,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1516637683}
   - component: {fileID: 1516637684}
+  - component: {fileID: 1516637685}
   m_Layer: 0
   m_Name: AppBootstrap
   m_TagString: Untagged
@@ -596,6 +598,18 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: ed4a75c2471886f4ba56d739164a5f4c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &1516637685
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1516637682}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b736dd46d46e6b34386fbb6b87b6afe7, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
 --- !u!1 &1667451948

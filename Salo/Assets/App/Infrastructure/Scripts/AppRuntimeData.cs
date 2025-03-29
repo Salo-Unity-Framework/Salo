@@ -6,6 +6,9 @@ using UnityEngine;
 /// </summary>
 public class AppRuntimeData : StaticInstanceOf<AppRuntimeData>
 {
+    [SerializeField] private BootstrapRuntimeDataSO bootstrapRuntimeData;
+    public BootstrapRuntimeDataSO BootstrapRuntimeData => bootstrapRuntimeData;
+
     [SerializeField] private SceneLoadRuntimeDataSO sceneLoadRuntimeData;
     public SceneLoadRuntimeDataSO SceneLoadRuntimeData => sceneLoadRuntimeData;
 }

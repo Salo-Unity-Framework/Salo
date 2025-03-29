@@ -2,8 +2,8 @@ using Cysharp.Threading.Tasks;
 using UnityEngine;
 
 /// <summary>
-/// Base class for Scene resource loaders. Note that base classes in a loaded
-/// scene will add themselves to SceneLoadRuntimeData even if disabled.
+/// Base class for Scene resource loaders. Note that base classes in a loaded scene
+/// will add themselves to SceneLoadRuntimeData even if the component is disabled.
 /// </summary>
 public abstract class SceneResourceLoaderBase : MonoBehaviour
 {

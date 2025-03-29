@@ -8,11 +8,14 @@ using UnityEngine;
 public class AppBootstrap : MonoBehaviour
 {
     // This is the entry point of the bootstrap flow
-    private void Start()
+    private async void Start()
     {
         // Check entitlement etc
 
         // Play splash media
+
+        // Load bootstrapped resources
+        await BootstrapResourceManager.Instance.Load();
 
         SceneLoadEvents.FirstSceneLoadRequested();
     }

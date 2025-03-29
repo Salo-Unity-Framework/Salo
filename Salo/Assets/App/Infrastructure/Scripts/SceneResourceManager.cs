@@ -19,7 +19,7 @@ public class SceneResourceManager : StaticInstanceOf<SceneResourceManager>
 
         for (int i = 0; i < tasks.Length; i++)
         {
-            if (null == loaders[i]) continue;
+            if (null == loaders[i]) continue; // Avoid invalid tasks
             tasks[i] = loaders[i].Load();
         }
 
