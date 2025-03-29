@@ -20,6 +20,11 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 61bd694c027e5c944874b8b975981071
+    m_Address: Assets/App/Sandbox/TestScene.unity
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: b82596f2ee06bb04bb1d2e710bbbe586
     m_Address: Assets/App/Infrastructure/Data
     m_ReadOnly: 0

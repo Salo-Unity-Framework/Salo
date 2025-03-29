@@ -13,14 +13,14 @@ using UnityEngine.SceneManagement;
 /// </summary>
 public static class EditorBootstrapper
 {
-    private static SceneLoadConfigSO sceneLoadConfig;
     private static string bootstrapScenePath;
     private static string[] openScenePaths;
 
     [InitializeOnLoadMethod]
     private static void bootstrap()
     {
-        sceneLoadConfig = SOLoaderEditor.GetUniqueAsset<SceneLoadConfigSO>();
+        var sceneLoadConfig = SOLoaderEditor.GetUniqueAsset<SceneLoadConfigSO>();
+        var sceneLoadRuntimeData = SOLoaderEditor.GetUniqueAsset<SceneLoadRuntimeDataSO>();
         bootstrapScenePath = AssetDatabase.GUIDToAssetPath(sceneLoadConfig.BootstrapScene.AssetGUID);
 
         // If bootstrapping is disabled, skip everything and load as normal
@@ -39,13 +39,13 @@ public static class EditorBootstrapper
             openScenePaths[i] = SceneManager.GetSceneAt(i).path;
         }
 
-        var openSceneType = getOpenSceneType();
+        sceneLoadRuntimeData.CurrentOpenSceneType = getOpenSceneType(sceneLoadConfig);
 
         // If the active scene is the zero scene, there is nothing to change.
         // ZeroScene should run normally and will load BootstrapScene.
         // Note that this is run on InitializeOnLoadMethod and will
         // take effect on the next Editor Play only.
-        switch (openSceneType)
+        switch (sceneLoadRuntimeData.CurrentOpenSceneType)
         {
             case OpenSceneType.ZeroScene:
                 EditorSceneManager.playModeStartScene = null;
@@ -63,7 +63,7 @@ public static class EditorBootstrapper
                 break;
 
             default:
-                throw new ArgumentException($"Invalid open scene type: {openSceneType}");
+                throw new ArgumentException($"Invalid open scene type: {sceneLoadRuntimeData.CurrentOpenSceneType}");
         }
     }
 
@@ -76,16 +76,14 @@ public static class EditorBootstrapper
 
         Assert.IsTrue(openScenePaths?.Length > 0, "No open scenes detected");
 
-        // TODO: Fade out
-
         // NOTE: Assuming only single scenes are open in the Editor. Otherwise
         // we'd need to change the system to load multiple scenes at a time.
         // Also processing Addressables scenes only.
         var sceneReference = getSceneReferenceFromPath(openScenePaths[0]);
-        SceneLoadEvents.AdditiveLoadRequested(sceneReference);
+        SceneLoadEvents.MajorSceneLoadRequested(sceneReference);
     }
 
-    private static OpenSceneType getOpenSceneType()
+    private static OpenSceneType getOpenSceneType(SceneLoadConfigSO sceneLoadConfig)
     {
         if (openScenePaths.Contains(sceneLoadConfig.ZeroScenePath)) return OpenSceneType.ZeroScene;
         if (openScenePaths.Contains(bootstrapScenePath)) return OpenSceneType.BootstrapScene;
@@ -110,13 +108,5 @@ public static class EditorBootstrapper
 
         // The asset was not found. Throw an exception
         throw new ArgumentException($"Addressable asset not found at {scenePath}");
-    }
-
-    private enum OpenSceneType
-    {
-        None,
-        ZeroScene,
-        BootstrapScene,
-        Others,
     }
 }

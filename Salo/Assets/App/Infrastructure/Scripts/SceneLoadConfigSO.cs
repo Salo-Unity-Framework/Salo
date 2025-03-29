@@ -10,4 +10,8 @@ public class SceneLoadConfigSO : ConfigSOBase
     [Tooltip("An Addressable reference to BootstrapScene")]
     [SerializeField] private SceneReference bootstrapScene;
     public SceneReference BootstrapScene => bootstrapScene;
+
+    [Tooltip("The first scene to load after bootstrapping")]
+    [SerializeField] private SceneReference firstScene;
+    public SceneReference FirstScene => firstScene;
 }

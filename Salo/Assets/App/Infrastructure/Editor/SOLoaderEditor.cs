@@ -25,7 +25,7 @@ public static class SOLoaderEditor
             Assert.IsTrue(guids.Length > 0);
 
             var path = AssetDatabase.GUIDToAssetPath(guids[0]);
-            uniqueAssets[typeof(T)] = AssetDatabase.LoadAssetAtPath<SceneLoadConfigSO>(path);
+            uniqueAssets[typeof(T)] = AssetDatabase.LoadAssetAtPath<T>(path);
         }
 
         return (T)uniqueAssets[typeof(T)];

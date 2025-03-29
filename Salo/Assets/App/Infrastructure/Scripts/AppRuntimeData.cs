@@ -1,0 +1,11 @@
+using UnityEngine;
+
+/// <summary>
+/// This bootstrapped system hold references to the various
+/// RuntimeDataSOBase subclasses in the project
+/// </summary>
+public class AppRuntimeData : StaticInstanceOf<AppRuntimeData>
+{
+    [SerializeField] private SceneLoadRuntimeDataSO sceneLoadRuntimeData;
+    public SceneLoadRuntimeDataSO SceneLoadRuntimeData => sceneLoadRuntimeData;
+}
