@@ -42,13 +42,13 @@ public class SceneLoadManager : MonoBehaviour
 
         isLoadingMajorScene = true;
 
-        // TODO
-        //// Fade out if fader is assigned
-        //if (null != sceneLoadData.CurrentSceneFader)
-        //{
-        //    SceneLoadEvents.FadeOutStarted();
-        //    await sceneLoadData.CurrentSceneFader.FadeOut();
-        //}
+        // Fade out if fader is assigned
+        var sceneLoadRuntimeData = AppRuntimeData.Instance.SceneLoadRuntimeData;
+        if (null != sceneLoadRuntimeData.CurrentSceneFader)
+        {
+            SceneLoadEvents.FadeOutStarted();
+            await sceneLoadRuntimeData.CurrentSceneFader.FadeOut();
+        }
 
         SceneLoadEvents.SceneLoadStarted();
 

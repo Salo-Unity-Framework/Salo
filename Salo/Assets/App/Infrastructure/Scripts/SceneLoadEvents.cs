@@ -12,9 +12,19 @@ public static class SceneLoadEvents
     public static void FirstSceneLoadRequested()
         => OnFirstSceneLoadRequested?.Invoke();
 
+    /// <summary>
+    /// Request to load a Major scene. Handled by SceneLoadManager
+    /// </summary>
     public static event Action<SceneReference> OnMajorSceneLoadRequested;
     public static void MajorSceneLoadRequested(SceneReference sceneReference)
         => OnMajorSceneLoadRequested?.Invoke(sceneReference);
+
+    /// <summary>
+    /// Notify start of scene fadeout. Invoked by SceneLoadManager
+    /// </summary>
+    public static event Action OnFadeOutStarted;
+    public static void FadeOutStarted()
+        => OnFadeOutStarted?.Invoke();
 
     // <summary>
     /// Invoked by SceneLoadManager when starting a scene

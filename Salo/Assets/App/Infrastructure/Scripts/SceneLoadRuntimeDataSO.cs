@@ -16,4 +16,6 @@ public class SceneLoadRuntimeDataSO : RuntimeDataSOBase
     [Tooltip("Subclasses of SceneResourceLoaderBase will add and remove themselves from this list")]
     public List<SceneResourceLoaderBase> SceneResourceLoaders = new();
 
+    [Tooltip("Subclasses of SceneFaderBase will assign and remove themselves to this. To be used by SceneLoadManager")]
+    public SceneFaderBase CurrentSceneFader;
 }
