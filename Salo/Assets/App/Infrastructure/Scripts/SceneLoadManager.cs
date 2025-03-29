@@ -57,8 +57,7 @@ public class SceneLoadManager : MonoBehaviour
 
         var loadedScene = await loadMajorScene(sceneReference);
 
-        // TODO
-        // await ResourceLoader.Instance.Load();
+        await SceneResourceManager.Instance.Load();
 
         isLoadingMajorScene = false;
 
@@ -78,8 +77,7 @@ public class SceneLoadManager : MonoBehaviour
 
     public async UniTask unloadCurrentSceneAndResources()
     {
-        // TODO
-        // await ResourceLoader.Instance.Unload();
+        await SceneResourceManager.Instance.Unload();
 
         if (!loadedMajorSceneInstance.Scene.IsValid())
         {
