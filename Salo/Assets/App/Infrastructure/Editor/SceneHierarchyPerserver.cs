@@ -8,8 +8,9 @@ using UnityEngine.Assertions;
 using UnityEngine.SceneManagement;
 
 /// <summary>
-/// This class is used by EditorBootstrapper to save and restore
-/// the scene objects' expnaded and selected states
+/// This class is used by EditorBootstrapper to save and restore the scene objects' expnaded and selected states
+/// Object paths are saved instead of InstanceID since scenes will be reloaded as part of bootstrapping. Paths
+/// are saved with index numbers to differentiate them from siblings with the same name.
 /// </summary>
 public static class SceneHierarchyPerserver
 {
@@ -142,45 +143,129 @@ public static class SceneHierarchyPerserver
 
     private static string getSceneRelativePath(GameObject gameObject)
     {
-        string path = gameObject.name;
-        Transform parent = gameObject.transform.parent;
+        var pathParts = new List<string>();
+        var currentTransform = gameObject.transform;
 
-        while (null != parent)
+        while (null != currentTransform)
         {
-            path = parent.name + "/" + path;
-            parent = parent.parent;
+            // Assign index to same name objects so they can be identified correctly
+            var index = getSiblingIndex(currentTransform, currentTransform.parent);
+
+            // Eg: Cube, Cube[1], Cube[2]
+            pathParts.Insert(0, index > 0 ? $"{currentTransform.name}[{index}]" : currentTransform.name);
+
+            // Continue up till scene root object
+            currentTransform = currentTransform.parent;
         }
 
-        return gameObject.scene.name + "/" + path;
+        // Add Scene name at the top level
+        return gameObject.scene.name + "/" + string.Join("/", pathParts); 
+    }
+
+    private static int getSiblingIndex(Transform target, Transform parent)
+    {
+        if (parent == null) // Root objects in scene
+        {
+            Scene scene = target.gameObject.scene;
+            if (!scene.IsValid()) return 0;
+
+            int index = 0;
+            foreach (var rootObject in scene.GetRootGameObjects())
+            {
+                if (rootObject == target.gameObject) return index; // Object found
+
+                // Increment index for same name root objects
+                if (rootObject.name == target.name) index++;
+            }
+
+            throw new ArgumentException($"Scene root object named {target.name} not found in Scene {target.gameObject.scene.name}");
+        }
+        else // Non-root objects
+        {
+            int index = 0;
+            foreach (Transform sibling in parent)
+            {
+                if (sibling == target) return index; // Object found
+
+                // Increment index for same name siblings
+                if (sibling.name == target.name) index++;
+            }
+
+            throw new ArgumentException($"Object named {target.name} not found in parent named {parent.name}");
+        }
     }
 
     private static GameObject findObjectByPath(string path)
     {
-        string[] parts = path.Split('/');
-        if (parts.Length < 2) return null;
+        string[] pathParts = path.Split('/');
+        if (pathParts.Length < 2) return null; // Should have scene + object name at least
 
-        Scene scene = SceneManager.GetSceneByName(parts[0]);
+        Scene scene = SceneManager.GetSceneByName(pathParts[0]); // Path starts with scene name
         if (!scene.IsValid()) return null;
 
-        GameObject gameObject = null;
-        foreach (GameObject root in scene.GetRootGameObjects())
-        {
-            if (root.name == parts[1])
-            {
-                gameObject = root;
-                break;
-            }
-        }
+        // Start with the root object and then traverse down its children as long as there are path parts
+        var gameObject = findChildFromNameWithIndex(scene.GetRootGameObjects(), pathParts[1]);
 
-        if (null == gameObject) return null;
-
-        for (int i = 2; i < parts.Length; i++)
+        // Continue from the third path part (i = 2)
+        for (int i = 2; i < pathParts.Length; i++)
         {
-            Transform child = gameObject.transform.Find(parts[i]);
-            if (child == null) return null;
-            gameObject = child.gameObject;
+            gameObject = findChildFromNameFromIndex(gameObject.transform, pathParts[i]);
         }
 
         return gameObject;
+    }
+
+    // Cube[1] -> (Cube, 1)
+    private static (string, int) parseNameWithIndex(string nameWithIndex)
+    {
+        string name;
+        int index;
+
+        int bracketIndex = nameWithIndex.LastIndexOf('[');
+        if (bracketIndex != -1 && nameWithIndex.EndsWith("]"))
+        {
+            // Eg: Cube[1]
+            name = nameWithIndex.Substring(0, bracketIndex);
+            if (!int.TryParse(nameWithIndex.Substring(bracketIndex + 1, nameWithIndex.Length - bracketIndex - 2), out index))
+                throw new ArgumentException($"Invalid nameWIthIdnex: {nameWithIndex}");
+        }
+        else
+        {
+            // First siblings don't have index. Eg: Cube
+            name = nameWithIndex;
+            index = 0;
+        }
+
+        return (name, index);
+    }
+
+    private static GameObject findChildFromNameWithIndex(IEnumerable<GameObject> gameObjects, string nameWithIndex)
+    {
+        var (name, index) = parseNameWithIndex(nameWithIndex);
+
+        int currentIndex = 0;
+        foreach (GameObject gameObject in gameObjects)
+        {
+            if (gameObject.name != name) continue; // Ignore other objects
+            if (currentIndex == index) return gameObject; // Object at the correct index
+            currentIndex++; // Object with same name found but index not reached yet. Increment.
+        }
+
+        throw new ArgumentException($"Object not found for nameWithIndex: {nameWithIndex}");
+    }
+
+    private static GameObject findChildFromNameFromIndex(Transform parent, string nameWithIndex)
+    {
+        var (name, index) = parseNameWithIndex(nameWithIndex);
+
+        int currentIndex = 0;
+        foreach (Transform childTransform in parent)
+        {
+            if (childTransform.name != name) continue; // Ignore other objects
+            if (currentIndex == index) return childTransform.gameObject; // Object at the correct index
+            currentIndex++; // Object with same name found but index not reached yet. Increment.
+        }
+
+        throw new ArgumentException($"Object not found for nameWithIndex: {nameWithIndex}");
     }
 }

@@ -49,6 +49,9 @@ public static class EditorBootstrapper
             return;
         }
 
+        // Save changes to open scenes
+        EditorSceneManager.SaveOpenScenes();
+
         // Save all the open scenes. We need to know if ZeroScene or BootstrapScene was
         // open to direct scene load flow. Also, to load the open scenes if needed.
         // Save to SO so the info persists through to processEnteringPlayMode.
