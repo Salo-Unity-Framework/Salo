@@ -12,8 +12,10 @@ public static class SOLoaderEditor
     private static Dictionary<Type, ScriptableObject> uniqueAssets = new();
 
     /// <summary>
-    /// Get the asset assuming there is ever only one asset of its type in
-    /// the project. If there are multiple instances, return the first
+    /// Get the asset assuming there is ever only one asset of its type in the project.
+    /// If there are multiple instances, return the first. This should be used when
+    /// the ScriptableObjec assets are needed before AppConfig or AppRuntimeData
+    /// instances are available (which occurs on bootstrap Awake).
     /// </summary>
     public static T GetUniqueAsset<T>()
         where T : ScriptableObject

@@ -56,6 +56,7 @@ public class SceneLoadManager : MonoBehaviour
         await unloadCurrentSceneAndResources();
 
         var loadedScene = await loadMajorScene(sceneReference);
+        SceneLoadEvents.MajorSceneLoaded(loadedScene);
 
         await SceneResourceManager.Instance.Load();
 

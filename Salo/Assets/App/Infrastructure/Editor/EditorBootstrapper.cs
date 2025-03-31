@@ -13,15 +13,34 @@ using UnityEngine.SceneManagement;
 /// </summary>
 public static class EditorBootstrapper
 {
-    private static string bootstrapScenePath;
-    private static string[] openScenePaths;
-
     [InitializeOnLoadMethod]
-    private static void bootstrap()
+    private static void initializeOnLoad()
+    {
+        EditorApplication.playModeStateChanged -= handlePlayModeStateChanged;
+        EditorApplication.playModeStateChanged += handlePlayModeStateChanged;
+    }
+
+    private static void handlePlayModeStateChanged(PlayModeStateChange state)
+    {
+        // Bootstrap in two stages on Editor Play
+        switch (state)
+        {
+            case PlayModeStateChange.ExitingEditMode:
+                processExitingEditMode();
+                break;
+
+            case PlayModeStateChange.EnteredPlayMode:
+                processEnteringPlayMode();
+                break;
+        }
+        
+    }
+
+    // Runs early on starting Editor Play. Note that Debug logs and class fields set here are cleared
+    private static void processExitingEditMode()
     {
         var sceneLoadConfig = SOLoaderEditor.GetUniqueAsset<SceneLoadConfigSO>();
         var sceneLoadRuntimeData = SOLoaderEditor.GetUniqueAsset<SceneLoadRuntimeDataSO>();
-        bootstrapScenePath = AssetDatabase.GUIDToAssetPath(sceneLoadConfig.BootstrapScene.AssetGUID);
 
         // If bootstrapping is disabled, skip everything and load as normal
         if (!BootstrapOnPlayMenuItem.IsBootstrapOnPlayEnabled())
@@ -30,16 +49,20 @@ public static class EditorBootstrapper
             return;
         }
 
-        // Save all the open scenes. We need to know if ZeroScene or BootstrapScene was open
-        // to direct scene load flow. Also, to load the open scenes if needed.
+        // Save all the open scenes. We need to know if ZeroScene or BootstrapScene was
+        // open to direct scene load flow. Also, to load the open scenes if needed.
+        // Save to SO so the info persists through to processEnteringPlayMode.
         var openSceneCount = SceneManager.sceneCount;
-        openScenePaths = new string[openSceneCount];
+        sceneLoadRuntimeData.OpenScenePaths = new string[openSceneCount];
         for (int i = 0; i < openSceneCount; i++)
         {
-            openScenePaths[i] = SceneManager.GetSceneAt(i).path;
+            sceneLoadRuntimeData.OpenScenePaths[i] = SceneManager.GetSceneAt(i).path;
         }
 
-        sceneLoadRuntimeData.CurrentOpenSceneType = getOpenSceneType(sceneLoadConfig);
+        SceneHierarchyPerserver.SaveHierarchyState(); // saves to sceneLoadRuntimeData
+
+        // Save to SO so the info persists through to processEnteringPlayMode
+        sceneLoadRuntimeData.CurrentOpenSceneType = getOpenSceneType(sceneLoadConfig, sceneLoadRuntimeData.OpenScenePaths);
 
         // If the active scene is the zero scene, there is nothing to change.
         // ZeroScene should run normally and will load BootstrapScene.
@@ -52,19 +75,39 @@ public static class EditorBootstrapper
                 break;
 
             case OpenSceneType.BootstrapScene:
+            case OpenSceneType.Others:
                 // Set ZeroScene to load first
                 EditorSceneManager.playModeStartScene = AssetDatabase.LoadAssetAtPath<SceneAsset>(sceneLoadConfig.ZeroScenePath);
-                break;
-
-            case OpenSceneType.Others:
-                // Set ZeroScene to load first. Also let EditorBootstrapper load those open scenes in handleFirstSceneLoadRequested
-                EditorSceneManager.playModeStartScene = AssetDatabase.LoadAssetAtPath<SceneAsset>(sceneLoadConfig.ZeroScenePath);
-                SceneLoadEvents.OnFirstSceneLoadRequested += handleFirstSceneLoadRequested;
                 break;
 
             default:
                 throw new ArgumentException($"Invalid open scene type: {sceneLoadRuntimeData.CurrentOpenSceneType}");
         }
+    }
+
+    // Runs later on starting Editor Play. Info needed here from processExitingEditMode
+    // should be assigned to SceneLoadRuntimeDataSO fields so they persist. Also,
+    // event subscriptions should be done here instead of processExitingEditMode.
+    private static void processEnteringPlayMode()
+    {
+        // Restore hierarchy states on scene load
+        SceneLoadEvents.OnMajorSceneLoaded -= handleMajorSceneLoaded;
+        SceneLoadEvents.OnMajorSceneLoaded += handleMajorSceneLoaded;
+
+        var sceneLoadRuntimeData = SOLoaderEditor.GetUniqueAsset<SceneLoadRuntimeDataSO>();
+        if (sceneLoadRuntimeData.CurrentOpenSceneType == OpenSceneType.Others)
+        {
+            SceneLoadEvents.OnFirstSceneLoadRequested += handleFirstSceneLoadRequested;
+        }
+    }
+
+    private static void handleMajorSceneLoaded(Scene _)
+    {
+        // Restore scene hierarachy expanded states and selection. This will run on loading completion
+        // of either FirstScene (FirstSceneLoader) or the Editor open scenes (EditorBootstrapper).
+
+        SceneLoadEvents.OnMajorSceneLoaded -= handleMajorSceneLoaded;
+        SceneHierarchyPerserver.RestoreHierarchyState();
     }
 
     private static void handleFirstSceneLoadRequested()
@@ -74,17 +117,20 @@ public static class EditorBootstrapper
         // Unsubscribe so game restarts will not cause wrong scenes to be loaded here (FirstSceneLoader will take over)
         SceneLoadEvents.OnFirstSceneLoadRequested -= handleFirstSceneLoadRequested;
 
-        Assert.IsTrue(openScenePaths?.Length > 0, "No open scenes detected");
+        var sceneLoadRuntimeData = SOLoaderEditor.GetUniqueAsset<SceneLoadRuntimeDataSO>();
+        Assert.IsTrue(sceneLoadRuntimeData.OpenScenePaths?.Length > 0, "No open scenes detected");
 
         // NOTE: Assuming only single scenes are open in the Editor. Otherwise
         // we'd need to change the system to load multiple scenes at a time.
         // Also processing Addressables scenes only.
-        var sceneReference = getSceneReferenceFromPath(openScenePaths[0]);
+        var sceneReference = getSceneReferenceFromPath(sceneLoadRuntimeData.OpenScenePaths[0]);
         SceneLoadEvents.MajorSceneLoadRequested(sceneReference);
     }
 
-    private static OpenSceneType getOpenSceneType(SceneLoadConfigSO sceneLoadConfig)
+    private static OpenSceneType getOpenSceneType(SceneLoadConfigSO sceneLoadConfig, string[] openScenePaths)
     {
+        var bootstrapScenePath = AssetDatabase.GUIDToAssetPath(sceneLoadConfig.BootstrapScene.AssetGUID);
+
         if (openScenePaths.Contains(sceneLoadConfig.ZeroScenePath)) return OpenSceneType.ZeroScene;
         if (openScenePaths.Contains(bootstrapScenePath)) return OpenSceneType.BootstrapScene;
         return OpenSceneType.Others;

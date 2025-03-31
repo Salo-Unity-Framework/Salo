@@ -1,4 +1,5 @@
 using System;
+using UnityEngine.SceneManagement;
 
 public static class SceneLoadEvents
 {
@@ -33,6 +34,15 @@ public static class SceneLoadEvents
     public static event Action OnSceneLoadStarted;
     public static void SceneLoadStarted()
         => OnSceneLoadStarted?.Invoke();
+
+    /// <summary>
+    /// Notify that Unity has loaded a Major scene. This is invoked
+    /// before OnSceneReady, before the SceneResourceLoad.
+    /// Invoked by SceneLoadManager.
+    /// </summary>
+    public static event Action<Scene> OnMajorSceneLoaded;
+    public static void MajorSceneLoaded(Scene scene)
+        => OnMajorSceneLoaded?.Invoke(scene);
 
     /// <summary>
     /// A Major scene has been loaded by SceneLoadManager, and the scenes
