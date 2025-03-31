@@ -7,7 +7,7 @@ public static class SceneLoadEvents
     /// This is effectively OnMajorSceneLoadRequested with SceneLoadConfig's FirstScene. 
     /// A separate event for FirstScene is needed because EditorBootstrapper needs to
     /// hijack the event to load Editor open scenes instead of the actual FirstScene.
-    /// Handled by either 
+    /// Handled by either FirstSceneLoader or EditorBootstrapper.
     /// </summary>
     public static event Action OnFirstSceneLoadRequested;
     public static void FirstSceneLoadRequested()
@@ -19,6 +19,13 @@ public static class SceneLoadEvents
     public static event Action<SceneReference> OnMajorSceneLoadRequested;
     public static void MajorSceneLoadRequested(SceneReference sceneReference)
         => OnMajorSceneLoadRequested?.Invoke(sceneReference);
+
+    /// <summary>
+    /// Request to reload the currently loaded Major scene.  Handled by SceneLoadManager.
+    /// </summary>
+    public static event Action OnReloadRequested;
+    public static void ReloadRequested()
+        => OnReloadRequested?.Invoke();
 
     /// <summary>
     /// Notify start of scene fadeout. Invoked by SceneLoadManager

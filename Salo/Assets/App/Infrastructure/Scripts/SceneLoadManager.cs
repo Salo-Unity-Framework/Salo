@@ -19,11 +19,13 @@ public class SceneLoadManager : MonoBehaviour
     private void OnEnable()
     {
         SceneLoadEvents.OnMajorSceneLoadRequested += handleMajorSceneLoadRequested;
+        SceneLoadEvents.OnReloadRequested += handleReloadRequested;
     }
 
     private void OnDisable()
     {
         SceneLoadEvents.OnMajorSceneLoadRequested -= handleMajorSceneLoadRequested;
+        SceneLoadEvents.OnReloadRequested -= handleReloadRequested;
     }
 
     private async void handleMajorSceneLoadRequested(SceneReference sceneReference)
@@ -70,7 +72,7 @@ public class SceneLoadManager : MonoBehaviour
     }
 
     // TODO: Make handler for reload-requested event and test
-    private void reloadCurrentScene()
+    private void handleReloadRequested()
     {
         Assert.IsNotNull(loadedMajorSceneReference);
         SceneLoadEvents.MajorSceneLoadRequested(loadedMajorSceneReference);

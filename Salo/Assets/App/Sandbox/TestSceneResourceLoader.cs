@@ -12,6 +12,6 @@ public class TestSceneResourceLoader : SceneResourceLoaderBase
     public async override UniTask Unload()
     {
         await UniTask.Delay(1000);
-        Debug.Log("Test loading completed");
+        Debug.Log("Test unloading completed");
     }
 }
