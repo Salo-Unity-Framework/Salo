@@ -71,7 +71,6 @@ public class SceneLoadManager : MonoBehaviour
         // anything that waits for the fade-in to finish here (yet).
     }
 
-    // TODO: Make handler for reload-requested event and test
     private void handleReloadRequested()
     {
         Assert.IsNotNull(loadedMajorSceneReference);

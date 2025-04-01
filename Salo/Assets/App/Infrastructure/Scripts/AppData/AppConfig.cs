@@ -8,4 +8,7 @@ public class AppConfig : StaticInstanceOf<AppConfig>
 {
     [SerializeField] private SceneLoadConfigSO sceneLoadConfig;
     public SceneLoadConfigSO SceneLoadConfig => sceneLoadConfig;
+
+    [SerializeField] private DataPersistenceConfigSO dataPersistenceConfig;
+    public DataPersistenceConfigSO DataPersistenceConfig => dataPersistenceConfig;
 }
