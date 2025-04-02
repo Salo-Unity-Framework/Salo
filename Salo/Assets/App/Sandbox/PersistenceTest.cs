@@ -8,11 +8,10 @@ public class PersistenceTest : MonoBehaviour
 
     private void Update()
     {
+        // Test calling save on a Config SO
         if (debugSaveTrigger)
         {
             debugSaveTrigger = false;
-            testConfig.temp1++;
-            testConfig.temp2++;
             testConfig.Save();
         }
     }
