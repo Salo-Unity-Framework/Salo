@@ -11,7 +11,7 @@ public abstract class SceneFaderBase : MonoBehaviour
 {
     protected virtual void OnEnable()
     {
-        var sceneLoadRuntimeData = AppRuntimeData.Instance.SceneLoadRuntimeData;
+        var sceneLoadRuntimeData = RuntimeDataSOHolder.Instance.SceneLoadRuntimeData;
 
         // Assign self so SceneLoadManager can call FadeOut
         if (null != sceneLoadRuntimeData.CurrentSceneFader)
@@ -24,7 +24,7 @@ public abstract class SceneFaderBase : MonoBehaviour
 
     protected virtual void OnDisable()
     {
-        AppRuntimeData.Instance.SceneLoadRuntimeData.CurrentSceneFader = null;
+        RuntimeDataSOHolder.Instance.SceneLoadRuntimeData.CurrentSceneFader = null;
     }
 
     /// <summary>

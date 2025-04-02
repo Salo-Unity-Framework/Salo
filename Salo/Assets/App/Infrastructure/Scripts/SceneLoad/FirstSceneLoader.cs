@@ -23,16 +23,16 @@ public class FirstSceneLoader : MonoBehaviour
 #if UNITY_EDITOR
 
         // On Editor, ignore the event if EditorBootstrapper will take over
-        Assert.IsTrue(AppRuntimeData.Instance.SceneLoadRuntimeData.CurrentOpenSceneType != OpenSceneType.None,
+        Assert.IsTrue(RuntimeDataSOHolder.Instance.SceneLoadRuntimeData.CurrentOpenSceneType != OpenSceneType.None,
             "Encountered OpenSceneTYpe.None");
 
-        if (AppRuntimeData.Instance.SceneLoadRuntimeData.CurrentOpenSceneType == OpenSceneType.Others)
+        if (RuntimeDataSOHolder.Instance.SceneLoadRuntimeData.CurrentOpenSceneType == OpenSceneType.Others)
         {
             return;
         }
 
 #endif
 
-        SceneLoadEvents.MajorSceneLoadRequested(AppConfig.Instance.SceneLoadConfig.FirstScene);
+        SceneLoadEvents.MajorSceneLoadRequested(ConfigSOHolder.Instance.SceneLoadConfig.FirstScene);
     }
 }

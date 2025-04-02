@@ -9,12 +9,12 @@ public abstract class BootstrapResourceLoaderBase : MonoBehaviour
 {
     protected virtual void Awake()
     {
-        AppRuntimeData.Instance.BootstrapRuntimeData.BootstrapResourceLoaders.Add(this);
+        RuntimeDataSOHolder.Instance.BootstrapRuntimeData.BootstrapResourceLoaders.Add(this);
     }
 
     protected virtual void OnDestroy()
     {
-        AppRuntimeData.Instance.BootstrapRuntimeData.BootstrapResourceLoaders.Remove(this);
+        RuntimeDataSOHolder.Instance.BootstrapRuntimeData.BootstrapResourceLoaders.Remove(this);
     }
 
     // Should be implemented as an async method

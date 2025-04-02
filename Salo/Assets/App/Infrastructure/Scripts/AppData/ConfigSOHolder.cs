@@ -4,7 +4,7 @@ using UnityEngine;
 /// This bootstrapped system hold references to the
 /// various ConfigSOBase subclasses in the project
 /// </summary>
-public class AppConfig : StaticInstanceOf<AppConfig>
+public class ConfigSOHolder : StaticInstanceOf<ConfigSOHolder>
 {
     [SerializeField] private SceneLoadConfigSO sceneLoadConfig;
     public SceneLoadConfigSO SceneLoadConfig => sceneLoadConfig;

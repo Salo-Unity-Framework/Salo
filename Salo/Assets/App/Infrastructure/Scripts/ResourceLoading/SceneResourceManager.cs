@@ -14,7 +14,7 @@ public class SceneResourceManager : StaticInstanceOf<SceneResourceManager>
     {
         // Note: Loaders register themselves to the SceneLoadRuntimeData asset's ResourceLoaders on Awake
 
-        var loaders = AppRuntimeData.Instance.SceneLoadRuntimeData.SceneResourceLoaders;
+        var loaders = RuntimeDataSOHolder.Instance.SceneLoadRuntimeData.SceneResourceLoaders;
         var tasks = new UniTask[loaders.Count];
 
         for (int i = 0; i < tasks.Length; i++)
@@ -31,7 +31,7 @@ public class SceneResourceManager : StaticInstanceOf<SceneResourceManager>
     // Run the unload method on registered loaders. Called by SceneLoadManager
     public async UniTask Unload()
     {
-        var loaders = AppRuntimeData.Instance.SceneLoadRuntimeData.SceneResourceLoaders;
+        var loaders = RuntimeDataSOHolder.Instance.SceneLoadRuntimeData.SceneResourceLoaders;
         var tasks = new UniTask[loaders.Count];
 
         for (int i = 0; i < tasks.Length; i++)

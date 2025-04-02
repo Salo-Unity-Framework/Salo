@@ -14,7 +14,7 @@ public class DataPersistenceManager : StaticInstanceOf<DataPersistenceManager>
         base.Awake();
 
         // Get the assigned persistor implementation
-        persistor = AppConfig.Instance.DataPersistenceConfig.DataPersistor;
+        persistor = ConfigSOHolder.Instance.DataPersistenceConfig.DataPersistor;
         Assert.IsNotNull(persistor);
     }
 

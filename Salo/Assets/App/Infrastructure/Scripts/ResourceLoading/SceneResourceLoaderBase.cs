@@ -9,12 +9,12 @@ public abstract class SceneResourceLoaderBase : MonoBehaviour
 {
     protected virtual void Awake()
     {
-        AppRuntimeData.Instance.SceneLoadRuntimeData.SceneResourceLoaders.Add(this);
+        RuntimeDataSOHolder.Instance.SceneLoadRuntimeData.SceneResourceLoaders.Add(this);
     }
 
     protected virtual void OnDestroy()
     {
-        AppRuntimeData.Instance.SceneLoadRuntimeData.SceneResourceLoaders.Remove(this);
+        RuntimeDataSOHolder.Instance.SceneLoadRuntimeData.SceneResourceLoaders.Remove(this);
     }
 
     // Should be implemented as async methods

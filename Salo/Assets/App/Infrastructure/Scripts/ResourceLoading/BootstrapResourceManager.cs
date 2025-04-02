@@ -9,7 +9,7 @@ public class BootstrapResourceManager : StaticInstanceOf<BootstrapResourceManage
 {
     public async UniTask Load()
     {
-        var loaders = AppRuntimeData.Instance.BootstrapRuntimeData.BootstrapResourceLoaders;
+        var loaders = RuntimeDataSOHolder.Instance.BootstrapRuntimeData.BootstrapResourceLoaders;
         var tasks = new UniTask[loaders.Count];
 
         for (int i = 0; i < tasks.Length; i++)
