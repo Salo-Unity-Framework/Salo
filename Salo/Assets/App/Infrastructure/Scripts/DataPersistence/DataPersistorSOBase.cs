@@ -1,3 +1,4 @@
+using Cysharp.Threading.Tasks;
 using UnityEngine;
 
 /// <summary>
@@ -23,7 +24,7 @@ public abstract class DataPersistorSOBase : ScriptableObject
     /// Read the string value with the given key into the "value" out parameter
     /// </summary>
     /// <returns>true if the read was successful</returns>
-    public abstract bool TryReadString(string key, out string value);
+    public abstract UniTask<(bool isSuccess, string value)> TryReadString(string key);
 
     /// <summary>
     /// Delete persisted data associated with the given key. Note that this should delete

@@ -1,3 +1,4 @@
+using Cysharp.Threading.Tasks;
 using UnityEngine;
 
 /// <summary>
@@ -24,7 +25,18 @@ public static class PersistableExtensions
         DataPersistenceManager.Instance.Save(persistable, json);
     }
 
-    // TODO: Load
+    /// <summary>
+    /// Load is called on IPersistables assigned (manually) to DataPersistenceConfig.PersistedConfigs
+    /// by PersistedDataLoader as part of the bootstrap flow.
+    /// </summary>
+    public static async UniTask Load(this IPersistable persistable)
+    {
+        var json = await DataPersistenceManager.Instance.Load(persistable);
+
+        if (string.IsNullOrEmpty(json)) return; // Error/Warning already logged by DataPersistenceManager
+
+        JsonUtility.FromJsonOverwrite(json, persistable);
+    }
 
     // NOTE: Data types that cannot be serialized can instead be converted and
     // saved to a Serializable field on an overridden Save(). This should be

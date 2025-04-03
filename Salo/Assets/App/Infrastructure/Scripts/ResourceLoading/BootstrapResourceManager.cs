@@ -2,7 +2,7 @@ using Cysharp.Threading.Tasks;
 using UnityEngine;
 
 /// <summary>
-/// This bootstrapped system loads and unloads bootstrapped resources. THe load method is run by
+/// This bootstrapped system loads and unloads bootstrapped resources. The load method is run by
 /// AppBootstrap during the bootstrap process. Loaders in BootstrapSCene will register
 /// themselves during BootstrapScene load to be used by this class.
 public class BootstrapResourceManager : StaticInstanceOf<BootstrapResourceManager>

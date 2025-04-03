@@ -1,3 +1,4 @@
+using Cysharp.Threading.Tasks;
 using UnityEngine;
 
 /// <summary>
@@ -6,7 +7,7 @@ using UnityEngine;
 /// on the DataPersistenceConfig asset
 /// </summary>
 [CreateAssetMenu(fileName = "LoggingPersistor", menuName = "Salo/Logging Persistor")]
-public class LoggingPersistor : DataPersistorSOBase
+public class LoggingPersistorSO : DataPersistorSOBase
 {
     public override bool HasKey(string key)
     {
@@ -18,10 +19,9 @@ public class LoggingPersistor : DataPersistorSOBase
         return true;
     }
 
-    public override bool TryReadString(string key, out string value)
+    public override UniTask<(bool isSuccess, string value)> TryReadString(string key)
     {
-        value = null;
-        return false;
+        return UniTask.FromResult((false, (string)null));
     }
 
     public override bool TryWriteString(string key, string value)

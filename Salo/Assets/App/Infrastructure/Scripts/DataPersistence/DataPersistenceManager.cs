@@ -1,9 +1,12 @@
+using Cysharp.Threading.Tasks;
 using UnityEngine;
 using UnityEngine.Assertions;
 
 /// <summary>
-/// This bootstrapped system handles data persistence. It instantiates the correct
-/// persistor and uses it when called to Save or Load by IPersistable classes.
+/// This bootstrapped system is a tool to handles data persistence for individual
+/// IPersistable classes . It instantiates the correct persistor and uses it when
+/// called to Save or Load by IPersistable classes. Note: Loading as part of the
+/// app flow is done by the PersistedDataLoader loader asset during bootstrap.
 /// </summary>
 public class DataPersistenceManager : StaticInstanceOf<DataPersistenceManager>
 {
@@ -31,5 +34,25 @@ public class DataPersistenceManager : StaticInstanceOf<DataPersistenceManager>
         {
             Debug.LogError($"Error writing data for {key}");
         }
+    }
+
+    public async UniTask<string> Load(IPersistable persistable)
+    {
+        var key = persistable.GetType().Name; // class name
+        if (!persistor.HasKey(key))
+        {
+            Debug.LogWarning($"Persisted data not found for key: {key}");
+            return null; // No data saved
+        }
+
+        // Get the json string
+        var (isSuccess, json) = await persistor.TryReadString(key);
+        if (!isSuccess)
+        {
+            Debug.LogError($"Error reading persisted data with key: {key}");
+            return null;
+        }
+
+        return json;
     }
 }

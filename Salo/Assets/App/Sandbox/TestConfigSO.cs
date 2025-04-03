@@ -7,7 +7,7 @@ public class TestConfigSO : ConfigSOBase, IPersistable
     public int Test1 => test1;
 
     [SerializeField] private int test2;
-    public int Test2;
+    public int Test2 => test2;
 
     public void Save()
     {
