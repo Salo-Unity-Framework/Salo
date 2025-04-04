@@ -8,8 +8,13 @@ public class DataPersistenceConfigSO : ConfigSOBase
     public DataPersistorSOBase DataPersistor => dataPersistor;
 
     // PersistedDataLoader will call Load on members implementing IPersistable to
-    // load [Persisted] fields. NOTE: Need to check if members are IPErsistable
-    [Tooltip("ConfigSOBase subclass assets that need to be persisted. Members must be manually added.")]
+    // load [Persisted] fields. NOTE: Need to check if members are IPersistable
+
+    [Tooltip("RuntimeDataSOBase subclass assets that need to be persisted. Members must be manually added here.")]
+    [SerializeField] private RuntimeDataSOBase[] persistedRuntimeDatas;
+    public RuntimeDataSOBase[] PersistedRuntimeDatas => persistedRuntimeDatas;
+
+    [Tooltip("ConfigSOBase subclass assets that need to be persisted. Members must be manually added here.")]
     [SerializeField] private ConfigSOBase[] persistedConfigs;
     public ConfigSOBase[] PersistedConfigs => persistedConfigs;
 }

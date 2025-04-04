@@ -13,4 +13,7 @@ MonoBehaviour:
   m_Name: DataPersistenceConfig
   m_EditorClassIdentifier: 
   dataPersistor: {fileID: 11400000, guid: c7a4f2bed9c8e1341b62bcedf043682a, type: 2}
-  persistedConfigs: []
+  persistedRuntimeDatas:
+  - {fileID: 11400000, guid: ff6581bb15d982049b6bdc7eee1e92b0, type: 2}
+  persistedConfigs:
+  - {fileID: 11400000, guid: 882bad3e0d8e28147b75d7dcdd78eb6f, type: 2}

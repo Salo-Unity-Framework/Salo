@@ -543,7 +543,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c61caa2d7bbc0bf4799c53d5efbe00e8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  testConfig: {fileID: 11400000, guid: 882bad3e0d8e28147b75d7dcdd78eb6f, type: 2}
+  runtimeDataSO: {fileID: 11400000, guid: ff6581bb15d982049b6bdc7eee1e92b0, type: 2}
+  configSO: {fileID: 11400000, guid: 882bad3e0d8e28147b75d7dcdd78eb6f, type: 2}
   debugSaveTrigger: 0
 --- !u!1 &2009592459
 GameObject:

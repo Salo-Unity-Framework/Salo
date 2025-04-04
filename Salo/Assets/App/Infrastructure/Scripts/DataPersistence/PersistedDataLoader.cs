@@ -7,7 +7,17 @@ public class PersistedDataLoader : BootstrapResourceLoaderBase
     {
         Debug.Log("Loading persted data");
 
-        // Get the list of persisted configs and process the ones that are actually IPersistable
+        // Get the list of persisted runtime data and process the ones that are actually IPersistables
+        var runtimeDatas = ConfigSOHolder.Instance.DataPersistenceConfig.PersistedRuntimeDatas;
+        foreach (var runtimeData in runtimeDatas)
+        {
+            if (runtimeData is IPersistable persistable)
+            {
+                await persistable.Load();
+            }
+        }
+
+        // Get the list of persisted configs and process the ones that are actually IPersistables
         var configs = ConfigSOHolder.Instance.DataPersistenceConfig.PersistedConfigs;
         foreach (var config in configs)
         {
