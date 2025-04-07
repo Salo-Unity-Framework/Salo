@@ -8,6 +8,7 @@ public class PersistenceTest : MonoBehaviour
 
     public bool debugSaveTrigger = false;
     public bool debugLogTrigger = false;
+    public bool debugResetTrigger = false;
 
     private void Update()
     {
@@ -33,6 +34,14 @@ public class PersistenceTest : MonoBehaviour
             debugLogTrigger = false;
 
             Debug.Log(runtimeDataSO.PersistedDateTime);
+        }
+
+        if (debugResetTrigger)
+        {
+            debugResetTrigger = false;
+            runtimeDataSO.ResetData();
+
+            runtimeDataSO.Save();
         }
     }
 }

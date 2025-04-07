@@ -18,4 +18,9 @@ public class TestPersistedConfigSO : ConfigSOBase, IPersistable
     // Explicit setter to change a private config value. Save needs to be
     // called to persist the value (make sure it is a [Persisted] field).
     public void SetEditableConfigInt(int value) => editableConfigInt = value;
+
+    public void ResetData()
+    {
+        // Generally there should be nothing to reset for config data
+    }
 }

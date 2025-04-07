@@ -13,7 +13,7 @@ public class TestPersistedRuntimeDataSO : RuntimeDataSOBase, IPersistable
     [Persisted] public int PersistedRuntimeInt;
 
     // Non-Serializable type data with Serializable backing field.
-    // Handle conversion in "overridden" Save and Load.
+    // Handle in "overridden" Save, Load, and ResetData.
     public DateTime PersistedDateTime;
     [Persisted, InspectorReadOnly, SerializeField] private string persistedDateTimeString;
 
@@ -33,6 +33,23 @@ public class TestPersistedRuntimeDataSO : RuntimeDataSOBase, IPersistable
         await PersistableExtensions.Load(this); // like base.Load() but for extension methods
 
         // Using DateTimeStyles.RoundtripKind since we did PersistedDateTime.ToString("o"); 
-        PersistedDateTime = DateTime.Parse(persistedDateTimeString, null, DateTimeStyles.RoundtripKind);
+        if (!DateTime.TryParse(persistedDateTimeString, null, DateTimeStyles.RoundtripKind, out PersistedDateTime))
+        {
+            // Parse failed. Assign default
+            PersistedDateTime = DateTime.MinValue;
+        }
+    }
+
+    public override void ResetData()
+    {
+        // This resets the Serailized fields only
+        ScriptableObjectHelper.ResetToTypeDefaults(this);
+
+        // Propagate the reset data to non-Serialized fields
+        if (!DateTime.TryParse(persistedDateTimeString, null, DateTimeStyles.RoundtripKind, out PersistedDateTime))
+        {
+            // Parse failed. Assign default
+            PersistedDateTime = DateTime.MinValue;
+        }
     }
 }

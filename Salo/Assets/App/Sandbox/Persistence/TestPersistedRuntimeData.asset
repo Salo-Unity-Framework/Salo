@@ -12,3 +12,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5f83cfe1f35767548b69518277c4d9ae, type: 3}
   m_Name: TestPersistedRuntimeData
   m_EditorClassIdentifier: 
+  DefaultRuntimeInt: 30
+  PersistedRuntimeInt: 90
+  persistedDateTimeString: 

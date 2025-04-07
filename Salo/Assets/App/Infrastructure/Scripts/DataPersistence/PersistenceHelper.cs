@@ -1,3 +1,4 @@
+using Cysharp.Threading.Tasks;
 using System;
 using System.Collections.Generic;
 using System.Reflection;
@@ -58,5 +59,47 @@ public static class PersistenceHelper
         wrapperTypes[persistableType] = wrapperType;
 
         return wrapperType;
+    }
+
+    // If a persistable is cast as IPersistable, calling Save or Load on it will call the extension method instead
+    // of the method on the concrete implementation. Make sure to call the concrete class's method if it exists.
+    public static void CallConcreteSave(IPersistable persistable)
+    {
+        var type = persistable.GetType(); // The concrete type
+        var methodName = nameof(PersistableExtensions.Save); // We just need the name as string
+        var methodInfo = type.GetMethod(methodName, BindingFlags.Instance | BindingFlags.Public | BindingFlags.DeclaredOnly);
+
+        if (null != methodInfo)
+        {
+            // If found, call the "override" method on the concrete type
+            methodInfo.Invoke(persistable, null);
+        }
+        {
+            // Method not found declared on the concrete implementing task. Call the default extension method
+            persistable.Save();
+        }
+    }
+
+    // If a persistable is cast as IPersistable, calling Save or Load on it will call the extension method instead
+    // of the method on the concrete implementation. Make sure to call the concrete class's method if it exists.
+    public static async UniTask CallConcreteLoad(IPersistable persistable)
+    {
+        var type = persistable.GetType(); // The concrete type
+        var methodName = nameof(PersistableExtensions.Load); // We just need the name as string
+        var methodInfo = type.GetMethod(methodName, BindingFlags.Instance | BindingFlags.Public | BindingFlags.DeclaredOnly);
+
+        if (null != methodInfo)
+        {
+            // If found, call the "override" method on the concrete type
+            var result = methodInfo.Invoke(persistable, null);
+            if (result is UniTask task)
+            {
+                await task;
+            }
+        }
+        {
+            // Method not found declared on the concrete implementing task. Call the default extension method
+            await persistable.Load();
+        }
     }
 }

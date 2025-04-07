@@ -11,6 +11,15 @@ using UnityEditor;
 /// </summary>
 public abstract class RuntimeDataSOBase : ScriptableObject
 {
+    // Pre-emptive implementation of IPersistable method since the
+    // implementation will be the same for all Runtime data
+    public virtual void ResetData()
+    {
+        ScriptableObjectHelper.ResetToTypeDefaults(this);
+
+        // NOTE: Data is not yet written to disk. Save has to be called to do that
+    }
+
 #if UNITY_EDITOR
 
     private void OnEnable()
@@ -25,18 +34,10 @@ public abstract class RuntimeDataSOBase : ScriptableObject
 
     private void handlePlayModeStateChanged(PlayModeStateChange state)
     {
-        if (state == PlayModeStateChange.EnteredEditMode) resetToDefault();
-    }
-
-    private void resetToDefault()
-    {
-        // Create a new instance - this will have default values
-        var tempInstance = CreateInstance(GetType());
-        var defaultJsonString = JsonUtility.ToJson(tempInstance);
-
-        // Assign values from the instance with default values
-        JsonUtility.FromJsonOverwrite(defaultJsonString, this);
-        DestroyImmediate(tempInstance);
+        if (state == PlayModeStateChange.EnteredEditMode)
+        {
+            ScriptableObjectHelper.ResetToTypeDefaults(this);
+        }
     }
 
 #endif
