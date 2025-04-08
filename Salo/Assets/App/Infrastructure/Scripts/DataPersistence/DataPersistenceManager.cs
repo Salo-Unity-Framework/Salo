@@ -12,6 +12,16 @@ public class DataPersistenceManager : StaticInstanceOf<DataPersistenceManager>
 {
     private DataPersistorSOBase persistor; // Store the current implementation
 
+    private void OnEnable()
+    {
+        DataPersistenceEvents.OnResetAllAndSaveRequested += handleResetAllRequested;
+    }
+
+    private void OnDisable()
+    {
+        DataPersistenceEvents.OnResetAllAndSaveRequested -= handleResetAllRequested;
+    }
+
     protected override void Awake()
     {
         base.Awake();
@@ -20,8 +30,6 @@ public class DataPersistenceManager : StaticInstanceOf<DataPersistenceManager>
         persistor = ConfigSOHolder.Instance.DataPersistenceConfig.DataPersistor;
         Assert.IsNotNull(persistor);
     }
-
-    // TODO: Listen for requests to save all, clear all etc
 
     // Keeping IPersistable as the parameter so the data persistence
     // process is more robust. The instance is used to get the key.
@@ -54,5 +62,30 @@ public class DataPersistenceManager : StaticInstanceOf<DataPersistenceManager>
         }
 
         return json;
+    }
+
+    private void handleResetAllRequested()
+    {
+        // Get the list of persisted runtime data and process the ones that are actually IPersistables
+        var runtimeDatas = ConfigSOHolder.Instance.DataPersistenceConfig.PersistedRuntimeDatas;
+        foreach (var runtimeData in runtimeDatas)
+        {
+            if (runtimeData is IPersistable persistable)
+            {
+                persistable.ResetData();
+                PersistenceHelper.CallConcreteSave(persistable);
+            }
+        }
+
+        // Get the list of persisted configs and process the ones that are actually IPersistables
+        var configs = ConfigSOHolder.Instance.DataPersistenceConfig.PersistedConfigs;
+        foreach (var config in configs)
+        {
+            if (config is IPersistable persistable)
+            {
+                persistable.ResetData();
+                PersistenceHelper.CallConcreteSave(persistable);
+            }
+        }
     }
 }

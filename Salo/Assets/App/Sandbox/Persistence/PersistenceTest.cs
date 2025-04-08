@@ -9,6 +9,7 @@ public class PersistenceTest : MonoBehaviour
     public bool debugSaveTrigger = false;
     public bool debugLogTrigger = false;
     public bool debugResetTrigger = false;
+    public bool debugResetAllTrigger = false;
 
     private void Update()
     {
@@ -42,6 +43,13 @@ public class PersistenceTest : MonoBehaviour
             runtimeDataSO.ResetData();
 
             runtimeDataSO.Save();
+        }
+
+        if (debugResetAllTrigger)
+        {
+            debugResetAllTrigger = false;
+
+            DataPersistenceEvents.ResetAllAndSaveRequested();
         }
     }
 }
