@@ -1,0 +1,12 @@
+{
+  "name": "com.vanlalhriata.salo",
+  "displayName": "Salo",
+  "version": "0.0.1",
+  "unity": "2022.3",
+  "description": "Salo is a lightweight codebase architecture for Unity.",
+  "author": {
+    "name": "Vanlal Hriata",
+    "email": "vanlalhriata@email.com"
+  },
+  "license": "See LICENSE.md"
+}
