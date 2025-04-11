@@ -1,11 +1,14 @@
 using System;
 
-public static class DataPersistenceEvents
+namespace Salo.Infrastructure
 {
-    /// <summary>
-    /// Request to reset all persisted data. Handled by DataPersistenceManager
-    /// </summary>
-    public static event Action OnResetAllAndSaveRequested;
-    public static void ResetAllAndSaveRequested()
-        => OnResetAllAndSaveRequested?.Invoke();
+    public static class DataPersistenceEvents
+    {
+        /// <summary>
+        /// Request to reset all persisted data. Handled by DataPersistenceManager
+        /// </summary>
+        public static event Action OnResetAllAndSaveRequested;
+        public static void ResetAllAndSaveRequested()
+            => OnResetAllAndSaveRequested?.Invoke();
+    }
 }

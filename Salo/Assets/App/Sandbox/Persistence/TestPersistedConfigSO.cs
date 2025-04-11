@@ -1,3 +1,4 @@
+using Salo.Infrastructure;
 using UnityEngine;
 
 [CreateAssetMenu(fileName = "TestPersistedConfig", menuName = "Salo/Sandbox/TestPersistedConfigSO")]

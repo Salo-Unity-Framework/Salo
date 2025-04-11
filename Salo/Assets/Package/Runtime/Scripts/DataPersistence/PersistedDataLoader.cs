@@ -1,33 +1,36 @@
 using Cysharp.Threading.Tasks;
 using UnityEngine;
 
-public class PersistedDataLoader : BootstrapResourceLoaderBase
+namespace Salo.Infrastructure
 {
-    public async override UniTask Load()
+    public class PersistedDataLoader : BootstrapResourceLoaderBase
     {
-        Debug.Log("Loading persted data");
-
-        // Get the list of persisted runtime data and process the ones that are actually IPersistables
-        var runtimeDatas = ConfigSOHolder.Instance.DataPersistenceConfig.PersistedRuntimeDatas;
-        foreach (var runtimeData in runtimeDatas)
+        public async override UniTask Load()
         {
-            if (runtimeData is IPersistable persistable)
+            Debug.Log("Loading persted data");
+
+            // Get the list of persisted runtime data and process the ones that are actually IPersistables
+            var runtimeDatas = ConfigSOHolder.Instance.DataPersistenceConfig.PersistedRuntimeDatas;
+            foreach (var runtimeData in runtimeDatas)
             {
-                // persistable.Load calls the extension method and not the concrete "override"
-                // on the implmenetor class. Use this to call that concrete method.
-                await PersistenceHelper.CallConcreteLoad(persistable);
+                if (runtimeData is IPersistable persistable)
+                {
+                    // persistable.Load calls the extension method and not the concrete "override"
+                    // on the implmenetor class. Use this to call that concrete method.
+                    await PersistenceHelper.CallConcreteLoad(persistable);
+                }
             }
-        }
 
-        // Get the list of persisted configs and process the ones that are actually IPersistables
-        var configs = ConfigSOHolder.Instance.DataPersistenceConfig.PersistedConfigs;
-        foreach (var config in configs)
-        {
-            if (config is IPersistable persistable)
+            // Get the list of persisted configs and process the ones that are actually IPersistables
+            var configs = ConfigSOHolder.Instance.DataPersistenceConfig.PersistedConfigs;
+            foreach (var config in configs)
             {
-                // persistable.Load calls the extension method and not the concrete "override"
-                // on the implmenetor class. Use this to call that concrete method.
-                await PersistenceHelper.CallConcreteLoad(persistable);
+                if (config is IPersistable persistable)
+                {
+                    // persistable.Load calls the extension method and not the concrete "override"
+                    // on the implmenetor class. Use this to call that concrete method.
+                    await PersistenceHelper.CallConcreteLoad(persistable);
+                }
             }
         }
     }

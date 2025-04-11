@@ -1,7 +1,10 @@
-public enum OpenSceneType
+namespace Salo.Infrastructure
 {
-    None,
-    ZeroScene,
-    BootstrapScene,
-    Others,
+    public enum OpenSceneType
+    {
+        None,
+        ZeroScene,
+        BootstrapScene,
+        Others,
+    }
 }

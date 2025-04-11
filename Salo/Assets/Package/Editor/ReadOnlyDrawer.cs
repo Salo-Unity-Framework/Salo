@@ -1,13 +1,16 @@
 using UnityEditor;
 using UnityEngine;
 
-[CustomPropertyDrawer(typeof(InspectorReadOnlyAttribute))]
-public class ReadOnlyDrawer : PropertyDrawer
+namespace Salo.Infrastructure.EditorExtensions
 {
-    public override void OnGUI(Rect position, SerializedProperty property, GUIContent label)
+    [CustomPropertyDrawer(typeof(InspectorReadOnlyAttribute))]
+    public class ReadOnlyDrawer : PropertyDrawer
     {
-        GUI.enabled = false;
-        EditorGUI.PropertyField(position, property, label, true);
-        GUI.enabled = true;
+        public override void OnGUI(Rect position, SerializedProperty property, GUIContent label)
+        {
+            GUI.enabled = false;
+            EditorGUI.PropertyField(position, property, label, true);
+            GUI.enabled = true;
+        }
     }
 }

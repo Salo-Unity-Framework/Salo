@@ -1,44 +1,47 @@
 using UnityEditor;
 using UnityEngine;
 
-[CustomEditor(typeof(InspectorComment))]
-public class InspectorCommentEditor : Editor
+namespace Salo.Infrastructure.EditorExtensions
 {
-    private InspectorComment inspectorComment;
-    private GUIStyle customStyle;
-    private bool isEdit = false;
-
-
-    private void OnEnable()
+    [CustomEditor(typeof(InspectorComment))]
+    public class InspectorCommentEditor : Editor
     {
-        inspectorComment = (InspectorComment)target;
-    }
+        private InspectorComment inspectorComment;
+        private GUIStyle customStyle;
+        private bool isEdit = false;
 
-    public override void OnInspectorGUI()
-    {
-        if (customStyle == null)
+
+        private void OnEnable()
         {
-            customStyle = new GUIStyle(GUI.skin.box);
-            customStyle.padding = new RectOffset(4, 2, 4, 4);
-            customStyle.margin = new RectOffset(6, 4, 2, 2);
+            inspectorComment = (InspectorComment)target;
         }
 
-        EditorGUILayout.LabelField("Comment:");
-        EditorGUILayout.BeginHorizontal(customStyle);
-        EditorGUILayout.LabelField(GetHelpBoxIcon(), GUILayout.Width(20));
-        EditorGUILayout.LabelField(inspectorComment.Comment, EditorStyles.wordWrappedLabel);
-        EditorGUILayout.EndHorizontal();
+        public override void OnInspectorGUI()
+        {
+            if (customStyle == null)
+            {
+                customStyle = new GUIStyle(GUI.skin.box);
+                customStyle.padding = new RectOffset(4, 2, 4, 4);
+                customStyle.margin = new RectOffset(6, 4, 2, 2);
+            }
 
-        // Foldout to expose the default UI - so the text can be edited
-        isEdit = EditorGUILayout.BeginFoldoutHeaderGroup(isEdit, "Edit");
-        if (isEdit) base.OnInspectorGUI();
-        EditorGUILayout.EndFoldoutHeaderGroup();
+            EditorGUILayout.LabelField("Comment:");
+            EditorGUILayout.BeginHorizontal(customStyle);
+            EditorGUILayout.LabelField(GetHelpBoxIcon(), GUILayout.Width(20));
+            EditorGUILayout.LabelField(inspectorComment.Comment, EditorStyles.wordWrappedLabel);
+            EditorGUILayout.EndHorizontal();
+
+            // Foldout to expose the default UI - so the text can be edited
+            isEdit = EditorGUILayout.BeginFoldoutHeaderGroup(isEdit, "Edit");
+            if (isEdit) base.OnInspectorGUI();
+            EditorGUILayout.EndFoldoutHeaderGroup();
+        }
+
+        private GUIContent GetHelpBoxIcon()
+        {
+            Texture2D iconTexture = EditorGUIUtility.IconContent("console.infoicon.sml").image as Texture2D;
+            return new GUIContent(iconTexture);
+        }
+
     }
-
-    private GUIContent GetHelpBoxIcon()
-    {
-        Texture2D iconTexture = EditorGUIUtility.IconContent("console.infoicon.sml").image as Texture2D;
-        return new GUIContent(iconTexture);
-    }
-
 }

@@ -1,22 +1,25 @@
 using UnityEngine;
 
-/// <summary>
-/// This exists on the Infrastructure prefab. This script takes over the
-/// app flow during bootstrapping. It starts from its Start method and
-/// ends when it calls SceneLoadEvents.FirstSceneLoadRequested.
-/// </summary>
-public class AppBootstrap : MonoBehaviour
+namespace Salo.Infrastructure
 {
-    // This is the entry point of the bootstrap flow
-    private async void Start()
+    /// <summary>
+    /// This exists on the Infrastructure prefab. This script takes over the
+    /// app flow during bootstrapping. It starts from its Start method and
+    /// ends when it calls SceneLoadEvents.FirstSceneLoadRequested.
+    /// </summary>
+    public class AppBootstrap : MonoBehaviour
     {
-        // Check entitlement etc
+        // This is the entry point of the bootstrap flow
+        private async void Start()
+        {
+            // Check entitlement etc
 
-        // Play splash media
+            // Play splash media
 
-        // Load bootstrapped resources
-        await BootstrapResourceManager.Instance.Load();
+            // Load bootstrapped resources
+            await BootstrapResourceManager.Instance.Load();
 
-        SceneLoadEvents.FirstSceneLoadRequested();
+            SceneLoadEvents.FirstSceneLoadRequested();
+        }
     }
 }

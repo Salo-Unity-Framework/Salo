@@ -2,49 +2,52 @@ using Cysharp.Threading.Tasks;
 using System;
 using UnityEngine;
 
-/// <summary>
-/// A basic implementation of DataPersistorSOBase to persist data using PlayerPrefs
-/// </summary>
-[CreateAssetMenu(fileName = "PlayerPrefsPersistor", menuName = "Salo/PlayerPrefs Persistor")]
-public class PlayerPrefsPersistorSO : DataPersistorSOBase
+namespace Salo.Infrastructure
 {
-    public override bool HasKey(string key)
+    /// <summary>
+    /// A basic implementation of DataPersistorSOBase to persist data using PlayerPrefs
+    /// </summary>
+    [CreateAssetMenu(fileName = "PlayerPrefsPersistor", menuName = "Salo/PlayerPrefs Persistor")]
+    public class PlayerPrefsPersistorSO : DataPersistorSOBase
     {
-        return PlayerPrefs.HasKey(key);
-    }
-
-    public override bool TryClearData(string key)
-    {
-        PlayerPrefs.DeleteKey(key);
-        return true;
-    }
-
-    // Note: Not making this an async method since PlayerPrefs.GetString is fast,
-    // and also can only be called from the main thread.
-    public override UniTask<(bool isSuccess, string value)> TryReadString(string key)
-    {
-        if (!PlayerPrefs.HasKey(key))
+        public override bool HasKey(string key)
         {
-            return UniTask.FromResult((false, (string)null));
+            return PlayerPrefs.HasKey(key);
         }
 
-        string value = null;
-
-        try
+        public override bool TryClearData(string key)
         {
-            value = PlayerPrefs.GetString(key);
-        }
-        catch (Exception exception)
-        {
-            Debug.LogException(exception);
+            PlayerPrefs.DeleteKey(key);
+            return true;
         }
 
-        return UniTask.FromResult((true, value));
-    }
+        // Note: Not making this an async method since PlayerPrefs.GetString is fast,
+        // and also can only be called from the main thread.
+        public override UniTask<(bool isSuccess, string value)> TryReadString(string key)
+        {
+            if (!PlayerPrefs.HasKey(key))
+            {
+                return UniTask.FromResult((false, (string)null));
+            }
 
-    public override bool TryWriteString(string key, string value)
-    {
-        PlayerPrefs.SetString(key, value);
-        return true;
+            string value = null;
+
+            try
+            {
+                value = PlayerPrefs.GetString(key);
+            }
+            catch (Exception exception)
+            {
+                Debug.LogException(exception);
+            }
+
+            return UniTask.FromResult((true, value));
+        }
+
+        public override bool TryWriteString(string key, string value)
+        {
+            PlayerPrefs.SetString(key, value);
+            return true;
+        }
     }
 }

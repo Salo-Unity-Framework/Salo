@@ -1,8 +1,11 @@
 using UnityEngine;
 
-public class InspectorComment : MonoBehaviour
+namespace Salo.Infrastructure
 {
-    [TextArea(3, 10)]
-    [SerializeField] private string comment;
-    public string Comment => comment;
+    public class InspectorComment : MonoBehaviour
+    {
+        [TextArea(3, 10)]
+        [SerializeField] private string comment;
+        public string Comment => comment;
+    }
 }

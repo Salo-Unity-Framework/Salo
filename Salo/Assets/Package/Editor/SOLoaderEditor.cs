@@ -4,32 +4,35 @@ using UnityEditor;
 using UnityEngine;
 using UnityEngine.Assertions;
 
-/// <summary>
-/// Easy access to SO assets like config assets
-/// </summary>
-public static class SOLoaderEditor
+namespace Salo.Infrastructure.EditorExtensions
 {
-    private static Dictionary<Type, ScriptableObject> uniqueAssets = new();
-
     /// <summary>
-    /// Get the asset assuming there is ever only one asset of its type in the project.
-    /// If there are multiple instances, return the first. This should be used when
-    /// the ScriptableObjec assets are needed before AppConfig or AppRuntimeData
-    /// instances are available (which occurs on bootstrap Awake).
+    /// Easy access to SO assets like config assets
     /// </summary>
-    public static T GetUniqueAsset<T>()
-        where T : ScriptableObject
+    public static class SOLoaderEditor
     {
-        if (!uniqueAssets.ContainsKey(typeof(T)))
+        private static Dictionary<Type, ScriptableObject> uniqueAssets = new();
+
+        /// <summary>
+        /// Get the asset assuming there is ever only one asset of its type in the project.
+        /// If there are multiple instances, return the first. This should be used when
+        /// the ScriptableObjec assets are needed before AppConfig or AppRuntimeData
+        /// instances are available (which occurs on bootstrap Awake).
+        /// </summary>
+        public static T GetUniqueAsset<T>()
+            where T : ScriptableObject
         {
-            // Asset not assigned to the dictionary yet. Find and assign
-            var guids = AssetDatabase.FindAssets($"t:{typeof(T).Name}");
-            Assert.IsTrue(guids.Length > 0);
+            if (!uniqueAssets.ContainsKey(typeof(T)))
+            {
+                // Asset not assigned to the dictionary yet. Find and assign
+                var guids = AssetDatabase.FindAssets($"t:{typeof(T).Name}");
+                Assert.IsTrue(guids.Length > 0);
 
-            var path = AssetDatabase.GUIDToAssetPath(guids[0]);
-            uniqueAssets[typeof(T)] = AssetDatabase.LoadAssetAtPath<T>(path);
+                var path = AssetDatabase.GUIDToAssetPath(guids[0]);
+                uniqueAssets[typeof(T)] = AssetDatabase.LoadAssetAtPath<T>(path);
+            }
+
+            return (T)uniqueAssets[typeof(T)];
         }
-
-        return (T)uniqueAssets[typeof(T)];
     }
 }

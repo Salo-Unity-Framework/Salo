@@ -1,4 +1,5 @@
 using Cysharp.Threading.Tasks;
+using Salo.Infrastructure;
 using UnityEngine;
 
 public class TestBootstrapResourceLoader : BootstrapResourceLoaderBase

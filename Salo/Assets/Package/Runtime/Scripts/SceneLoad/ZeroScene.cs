@@ -1,19 +1,22 @@
 using UnityEngine;
 using UnityEngine.AddressableAssets;
 
-/// <summary>
-/// The purpose of the ZeroScene scene is to act as the only scene in
-/// the build list and to load up BootstrapScene. BootstrapScene
-/// cannot be in the build list since it contains Addressables
-/// and therefore must be an Addressable too to avoid
-/// asset duplication.
-/// </summary>
-public class ZeroScene : MonoBehaviour
+namespace Salo.Infrastructure
 {
-    [SerializeField] private SceneLoadConfigSO sceneLoadConfig;
-
-    private void Start()
+    /// <summary>
+    /// The purpose of the ZeroScene scene is to act as the only scene in
+    /// the build list and to load up BootstrapScene. BootstrapScene
+    /// cannot be in the build list since it contains Addressables
+    /// and therefore must be an Addressable too to avoid
+    /// asset duplication.
+    /// </summary>
+    public class ZeroScene : MonoBehaviour
     {
-        Addressables.LoadSceneAsync(sceneLoadConfig.BootstrapScene);
+        [SerializeField] private SceneLoadConfigSO sceneLoadConfig;
+
+        private void Start()
+        {
+            Addressables.LoadSceneAsync(sceneLoadConfig.BootstrapScene);
+        }
     }
 }

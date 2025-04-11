@@ -5,41 +5,44 @@ using UnityEditor;
 using System;
 using UnityEngine.AddressableAssets;
 
-[Serializable]
-public class SceneReference : AssetReference
+namespace Salo.Infrastructure
 {
-    /// <summary>
-    /// Constructs a new reference to a Scene Asset.
-    /// </summary>
-    /// <param name="guid">The object guid.</param>
-    public SceneReference(string guid) : base(guid) { }
-
-    public override bool ValidateAsset(string path)
+    [Serializable]
+    public class SceneReference : AssetReference
     {
-#if UNITY_EDITOR
-        var type = AssetDatabase.GetMainAssetTypeAtPath(path);
-        return type != null && typeof(SceneAsset).IsAssignableFrom(type);
-#else
-        return false;
-#endif
-    }
+        /// <summary>
+        /// Constructs a new reference to a Scene Asset.
+        /// </summary>
+        /// <param name="guid">The object guid.</param>
+        public SceneReference(string guid) : base(guid) { }
 
-#if UNITY_EDITOR
-    public new SceneAsset editorAsset
-    {
-        get
+        public override bool ValidateAsset(string path)
         {
-            if (CachedAsset != null || string.IsNullOrEmpty(AssetGUID))
-            {
-                return CachedAsset as SceneAsset;
-            }
-
-            var assetPath = AssetDatabase.GUIDToAssetPath(AssetGUID);
-            var main = AssetDatabase.LoadMainAssetAtPath(assetPath) as SceneAsset;
-            if (main != null) CachedAsset = main;
-
-            return main;
+    #if UNITY_EDITOR
+            var type = AssetDatabase.GetMainAssetTypeAtPath(path);
+            return type != null && typeof(SceneAsset).IsAssignableFrom(type);
+    #else
+            return false;
+    #endif
         }
+
+    #if UNITY_EDITOR
+        public new SceneAsset editorAsset
+        {
+            get
+            {
+                if (CachedAsset != null || string.IsNullOrEmpty(AssetGUID))
+                {
+                    return CachedAsset as SceneAsset;
+                }
+
+                var assetPath = AssetDatabase.GUIDToAssetPath(AssetGUID);
+                var main = AssetDatabase.LoadMainAssetAtPath(assetPath) as SceneAsset;
+                if (main != null) CachedAsset = main;
+
+                return main;
+            }
+        }
+    #endif
     }
-#endif
 }

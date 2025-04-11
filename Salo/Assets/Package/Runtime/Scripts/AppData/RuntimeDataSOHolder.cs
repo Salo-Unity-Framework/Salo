@@ -1,14 +1,17 @@
 using UnityEngine;
 
-/// <summary>
-/// This bootstrapped system hold references to the various
-/// RuntimeDataSOBase subclasses in the project
-/// </summary>
-public class RuntimeDataSOHolder : StaticInstanceOf<RuntimeDataSOHolder>
+namespace Salo.Infrastructure
 {
-    [SerializeField] private BootstrapRuntimeDataSO bootstrapRuntimeData;
-    public BootstrapRuntimeDataSO BootstrapRuntimeData => bootstrapRuntimeData;
+    /// <summary>
+    /// This bootstrapped system hold references to the various
+    /// RuntimeDataSOBase subclasses in the project
+    /// </summary>
+    public class RuntimeDataSOHolder : StaticInstanceOf<RuntimeDataSOHolder>
+    {
+        [SerializeField] private BootstrapRuntimeDataSO bootstrapRuntimeData;
+        public BootstrapRuntimeDataSO BootstrapRuntimeData => bootstrapRuntimeData;
 
-    [SerializeField] private SceneLoadRuntimeDataSO sceneLoadRuntimeData;
-    public SceneLoadRuntimeDataSO SceneLoadRuntimeData => sceneLoadRuntimeData;
+        [SerializeField] private SceneLoadRuntimeDataSO sceneLoadRuntimeData;
+        public SceneLoadRuntimeDataSO SceneLoadRuntimeData => sceneLoadRuntimeData;
+    }
 }

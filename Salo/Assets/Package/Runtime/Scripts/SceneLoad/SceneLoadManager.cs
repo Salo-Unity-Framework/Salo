@@ -6,135 +6,138 @@ using UnityEngine.ResourceManagement.AsyncOperations;
 using UnityEngine.ResourceManagement.ResourceProviders;
 using UnityEngine.SceneManagement;
 
-/// <summary>
-/// This bootstrapped system handles scene loads
-/// </summary>
-public class SceneLoadManager : MonoBehaviour
+namespace Salo.Infrastructure
 {
-    private bool isLoadingMajorScene = false;
-
-    private SceneInstance loadedMajorSceneInstance;
-    private SceneReference loadedMajorSceneReference;
-
-    private void OnEnable()
+    /// <summary>
+    /// This bootstrapped system handles scene loads
+    /// </summary>
+    public class SceneLoadManager : MonoBehaviour
     {
-        SceneLoadEvents.OnMajorSceneLoadRequested += handleMajorSceneLoadRequested;
-        SceneLoadEvents.OnReloadRequested += handleReloadRequested;
-    }
+        private bool isLoadingMajorScene = false;
 
-    private void OnDisable()
-    {
-        SceneLoadEvents.OnMajorSceneLoadRequested -= handleMajorSceneLoadRequested;
-        SceneLoadEvents.OnReloadRequested -= handleReloadRequested;
-    }
+        private SceneInstance loadedMajorSceneInstance;
+        private SceneReference loadedMajorSceneReference;
 
-    private async void handleMajorSceneLoadRequested(SceneReference sceneReference)
-    {
-        if (isLoadingMajorScene)
+        private void OnEnable()
         {
-            Debug.LogError($"Attempting to load another Major scene while already loading one");
-            return;
+            SceneLoadEvents.OnMajorSceneLoadRequested += handleMajorSceneLoadRequested;
+            SceneLoadEvents.OnReloadRequested += handleReloadRequested;
         }
 
-        if (!sceneReference.RuntimeKeyIsValid())
+        private void OnDisable()
         {
-            Debug.LogError("Attempted to load unassigned SceneReference");
-            return;
+            SceneLoadEvents.OnMajorSceneLoadRequested -= handleMajorSceneLoadRequested;
+            SceneLoadEvents.OnReloadRequested -= handleReloadRequested;
         }
 
-        isLoadingMajorScene = true;
-
-        // Fade out if fader is assigned
-        var sceneLoadRuntimeData = RuntimeDataSOHolder.Instance.SceneLoadRuntimeData;
-        if (null != sceneLoadRuntimeData.CurrentSceneFader)
+        private async void handleMajorSceneLoadRequested(SceneReference sceneReference)
         {
-            SceneLoadEvents.FadeOutStarted();
-            await sceneLoadRuntimeData.CurrentSceneFader.FadeOut();
+            if (isLoadingMajorScene)
+            {
+                Debug.LogError($"Attempting to load another Major scene while already loading one");
+                return;
+            }
+
+            if (!sceneReference.RuntimeKeyIsValid())
+            {
+                Debug.LogError("Attempted to load unassigned SceneReference");
+                return;
+            }
+
+            isLoadingMajorScene = true;
+
+            // Fade out if fader is assigned
+            var sceneLoadRuntimeData = RuntimeDataSOHolder.Instance.SceneLoadRuntimeData;
+            if (null != sceneLoadRuntimeData.CurrentSceneFader)
+            {
+                SceneLoadEvents.FadeOutStarted();
+                await sceneLoadRuntimeData.CurrentSceneFader.FadeOut();
+            }
+
+            SceneLoadEvents.SceneLoadStarted();
+
+            // Unload current major scene and its resources if any
+            await unloadCurrentSceneAndResources();
+
+            var loadedScene = await loadMajorScene(sceneReference);
+            SceneLoadEvents.MajorSceneLoaded(loadedScene);
+
+            await SceneResourceManager.Instance.Load();
+
+            isLoadingMajorScene = false;
+
+            SceneLoadEvents.SceneReady();
+
+            // Note: SceneFaders may implement their own fade-in logic. If they do, they
+            // should start the logic - it will not be started from here as there isn't
+            // anything that waits for the fade-in to finish here (yet).
         }
 
-        SceneLoadEvents.SceneLoadStarted();
-
-        // Unload current major scene and its resources if any
-        await unloadCurrentSceneAndResources();
-
-        var loadedScene = await loadMajorScene(sceneReference);
-        SceneLoadEvents.MajorSceneLoaded(loadedScene);
-
-        await SceneResourceManager.Instance.Load();
-
-        isLoadingMajorScene = false;
-
-        SceneLoadEvents.SceneReady();
-
-        // Note: SceneFaders may implement their own fade-in logic. If they do, they
-        // should start the logic - it will not be started from here as there isn't
-        // anything that waits for the fade-in to finish here (yet).
-    }
-
-    private void handleReloadRequested()
-    {
-        Assert.IsNotNull(loadedMajorSceneReference);
-        SceneLoadEvents.MajorSceneLoadRequested(loadedMajorSceneReference);
-    }
-
-    public async UniTask unloadCurrentSceneAndResources()
-    {
-        await SceneResourceManager.Instance.Unload();
-
-        if (!loadedMajorSceneInstance.Scene.IsValid())
+        private void handleReloadRequested()
         {
-            // loadedMajorSceneInstance is not assigned until the SceneLoadManager loads
-            // the first Majopr scene. It will be invalid on the first Major scene load.
-            //Debug.LogError("Attempted to unload invalid Scene");
-            return;
+            Assert.IsNotNull(loadedMajorSceneReference);
+            SceneLoadEvents.MajorSceneLoadRequested(loadedMajorSceneReference);
         }
 
-        var unloadedSceneName = loadedMajorSceneInstance.Scene.name; // Store while still valid
-        var handle = Addressables.UnloadSceneAsync(loadedMajorSceneInstance, autoReleaseHandle: false);
-        await handle.Task.AsUniTask();
-
-        if (handle.Status == AsyncOperationStatus.Succeeded)
+        public async UniTask unloadCurrentSceneAndResources()
         {
-            Debug.Log($"Scene unloaded: {unloadedSceneName}");
-        }
-        else if (handle.Status == AsyncOperationStatus.Failed)
-        {
-            Debug.LogError($"Failed to unload scene: {unloadedSceneName}");
-        }
+            await SceneResourceManager.Instance.Unload();
 
-        Addressables.Release(handle);
-    }
+            if (!loadedMajorSceneInstance.Scene.IsValid())
+            {
+                // loadedMajorSceneInstance is not assigned until the SceneLoadManager loads
+                // the first Majopr scene. It will be invalid on the first Major scene load.
+                //Debug.LogError("Attempted to unload invalid Scene");
+                return;
+            }
 
-    private async UniTask<Scene> loadMajorScene(SceneReference sceneReference)
-    {
-        // Load the scene without activating to avoid calls to Start
-        // before the scene is set as the active scene.
-        var handle = sceneReference.LoadSceneAsync(LoadSceneMode.Additive, activateOnLoad: false);
-        await handle.Task.AsUniTask();
+            var unloadedSceneName = loadedMajorSceneInstance.Scene.name; // Store while still valid
+            var handle = Addressables.UnloadSceneAsync(loadedMajorSceneInstance, autoReleaseHandle: false);
+            await handle.Task.AsUniTask();
 
-        // Process load result
-        if (handle.Status == AsyncOperationStatus.Succeeded)
-        {
-            loadedMajorSceneInstance = handle.Result;
-            loadedMajorSceneReference = sceneReference;
+            if (handle.Status == AsyncOperationStatus.Succeeded)
+            {
+                Debug.Log($"Scene unloaded: {unloadedSceneName}");
+            }
+            else if (handle.Status == AsyncOperationStatus.Failed)
+            {
+                Debug.LogError($"Failed to unload scene: {unloadedSceneName}");
+            }
 
-            // Manually activate the scene since it was loaded using activateOnLoad = false
-            // HACK: Setting activateOnLoad = false and manually activating the scene here
-            // somehow fixes the issue with Start being called on the loaded scene's
-            // script before it was set active - this resulted in objects being
-            // instantiated in other scenes if instantiated in Start.
-            await handle.Result.ActivateAsync();
-
-            Debug.Log($"Major scene loaded: {loadedMajorSceneInstance.Scene.name}");
-
-            // Note: Loaded major scene. Set it active
-            SceneManager.SetActiveScene(loadedMajorSceneInstance.Scene);
-        }
-        else if (handle.Status == AsyncOperationStatus.Failed)
-        {
-            Debug.LogError($"Failed to load major scene. GUID: {sceneReference.AssetGUID}");
+            Addressables.Release(handle);
         }
 
-        return handle.Result.Scene;
+        private async UniTask<Scene> loadMajorScene(SceneReference sceneReference)
+        {
+            // Load the scene without activating to avoid calls to Start
+            // before the scene is set as the active scene.
+            var handle = sceneReference.LoadSceneAsync(LoadSceneMode.Additive, activateOnLoad: false);
+            await handle.Task.AsUniTask();
+
+            // Process load result
+            if (handle.Status == AsyncOperationStatus.Succeeded)
+            {
+                loadedMajorSceneInstance = handle.Result;
+                loadedMajorSceneReference = sceneReference;
+
+                // Manually activate the scene since it was loaded using activateOnLoad = false
+                // HACK: Setting activateOnLoad = false and manually activating the scene here
+                // somehow fixes the issue with Start being called on the loaded scene's
+                // script before it was set active - this resulted in objects being
+                // instantiated in other scenes if instantiated in Start.
+                await handle.Result.ActivateAsync();
+
+                Debug.Log($"Major scene loaded: {loadedMajorSceneInstance.Scene.name}");
+
+                // Note: Loaded major scene. Set it active
+                SceneManager.SetActiveScene(loadedMajorSceneInstance.Scene);
+            }
+            else if (handle.Status == AsyncOperationStatus.Failed)
+            {
+                Debug.LogError($"Failed to load major scene. GUID: {sceneReference.AssetGUID}");
+            }
+
+            return handle.Result.Scene;
+        }
     }
 }
