@@ -15,18 +15,11 @@ namespace Salo.Infrastructure.EditorExtensions
         [MenuItem("Salo/Run first-time setup")]
         private static void setup()
         {
-            moveAssets();
-            //createAddressables();
+            moveUserModifiableFolder();
+            markAddressable();
 
             AssetDatabase.SaveAssets();
             AssetDatabase.Refresh();
-        }
-
-        private static void moveAssets()
-        {
-            moveUserModifiableFolder();
-
-            // TODO: Move BootstrapScene
         }
 
         private static void moveUserModifiableFolder()
@@ -76,9 +69,9 @@ namespace Salo.Infrastructure.EditorExtensions
             Debug.Log("Moved UserModifiable folder from Packages to Assets");
         }
 
-        private static void createAddressables()
+        private static void markAddressable()
         {
-            Debug.Log("Creating Addressables...");
+            Debug.Log("Marking assets as Addressable...");
 
             var settings = AddressableAssetSettingsDefaultObject.Settings;
             if (null == settings)
@@ -87,21 +80,29 @@ namespace Salo.Infrastructure.EditorExtensions
                 return;
             }
 
-            // BootstrapScene
-            var sceneLoadConfig = SOLoaderEditor.GetUniqueAsset<SceneLoadConfigSO>();
-            var bootstrapSceneGuid = sceneLoadConfig.BootstrapScene.AssetGUID;
-            if (string.IsNullOrEmpty(bootstrapSceneGuid))
+            // Get the folder path from the DefaultAsset
+            var setupConfig = SOLoaderEditor.GetUniqueAsset<SetupConfigSO>();
+            string folderPath = AssetDatabase.GetAssetPath(setupConfig.UserModifiableFolder);
+            if (!AssetDatabase.IsValidFolder(folderPath))
             {
-                Debug.LogError("sceneLoadConfig.BootstrapScene is likely not assigned");
+                Debug.LogError($"Path '{folderPath}' is not a valid folder.");
                 return;
             }
 
-            // NOTE: Moving to Default group
-            settings.CreateOrMoveEntry(bootstrapSceneGuid, settings.DefaultGroup);
+            var guid = AssetDatabase.AssetPathToGUID(folderPath);
 
-            Debug.Log("Added BootstrapScene to Addressables Default group");
+            // Check if the folder is already an Addressable
+            var entry = settings.FindAssetEntry(guid);
+            if (null != entry)
+            {
+                Debug.Log($"Folder '{folderPath}' is already an Addressable");
+                return;
+            }
 
-            // TODO: Data folder
+            // Mark as Addressable. NOTE: Moving to Default group
+            settings.CreateOrMoveEntry(guid, settings.DefaultGroup);
+
+            Debug.Log("Marked UserModifiable data as Addressable");
         }
     }
 }

@@ -12,5 +12,5 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f32ff95dd8ed43e4dac0f3fdfbb23751, type: 3}
   m_Name: SetupConfig
   m_EditorClassIdentifier: 
-  userModifiableFolder: {fileID: 102900000, guid: beef54f6accb9784d8c7d5869f2c9959, type: 3}
+  userModifiableFolder: {fileID: 102900000, guid: 29c2ca19324a65c418b14a131a20065e, type: 3}
   frameworkFolderName: Salo
