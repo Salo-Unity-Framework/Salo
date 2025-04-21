@@ -16,7 +16,7 @@ namespace Salo.Infrastructure
         {
             // Note: Loaders register themselves to the SceneLoadRuntimeData asset's ResourceLoaders on Awake
 
-            var loaders = RuntimeDataSOHolder.Instance.SceneLoadRuntimeData.SceneResourceLoaders;
+            var loaders = InfrastructureSOHolder.Instance.SceneLoadRuntimeData.SceneResourceLoaders;
             var tasks = new UniTask[loaders.Count];
 
             for (int i = 0; i < tasks.Length; i++)
@@ -33,7 +33,7 @@ namespace Salo.Infrastructure
         // Run the unload method on registered loaders. Called by SceneLoadManager
         public async UniTask Unload()
         {
-            var loaders = RuntimeDataSOHolder.Instance.SceneLoadRuntimeData.SceneResourceLoaders;
+            var loaders = InfrastructureSOHolder.Instance.SceneLoadRuntimeData.SceneResourceLoaders;
             var tasks = new UniTask[loaders.Count];
 
             for (int i = 0; i < tasks.Length; i++)

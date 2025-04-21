@@ -47,7 +47,7 @@ namespace Salo.Infrastructure
             isLoadingMajorScene = true;
 
             // Fade out if fader is assigned
-            var sceneLoadRuntimeData = RuntimeDataSOHolder.Instance.SceneLoadRuntimeData;
+            var sceneLoadRuntimeData = InfrastructureSOHolder.Instance.SceneLoadRuntimeData;
             if (null != sceneLoadRuntimeData.CurrentSceneFader)
             {
                 SceneLoadEvents.FadeOutStarted();

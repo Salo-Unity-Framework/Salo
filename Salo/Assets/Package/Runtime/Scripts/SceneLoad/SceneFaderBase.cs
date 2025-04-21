@@ -13,7 +13,7 @@ namespace Salo.Infrastructure
     {
         protected virtual void OnEnable()
         {
-            var sceneLoadRuntimeData = RuntimeDataSOHolder.Instance.SceneLoadRuntimeData;
+            var sceneLoadRuntimeData = InfrastructureSOHolder.Instance.SceneLoadRuntimeData;
 
             // Assign self so SceneLoadManager can call FadeOut
             if (null != sceneLoadRuntimeData.CurrentSceneFader)
@@ -26,7 +26,7 @@ namespace Salo.Infrastructure
 
         protected virtual void OnDisable()
         {
-            RuntimeDataSOHolder.Instance.SceneLoadRuntimeData.CurrentSceneFader = null;
+            InfrastructureSOHolder.Instance.SceneLoadRuntimeData.CurrentSceneFader = null;
         }
 
         /// <summary>

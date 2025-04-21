@@ -1,0 +1,26 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 13966, guid: 0000000000000000e000000000000000, type: 0}
+  m_Name: BootstrapSceneTemplate
+  m_EditorClassIdentifier: 
+  templateScene: {fileID: 102900000, guid: f9f77288a51799049b08ad01ae5b3678, type: 3}
+  templateName: BootstrapSceneTemplate
+  description: Create a scene from this template on Framework installation
+  preview: {fileID: 0}
+  dependencies:
+  - dependency: {fileID: 3906815615208075064, guid: b452440dfafcdbf4eb7f1591a75cadca, type: 3}
+    instantiationMode: 0
+  - dependency: {fileID: 8976248193601906643, guid: ab41364df3f10db45b99428d1d65a874, type: 3}
+    instantiationMode: 1
+  templatePipeline: {fileID: 0}
+  badge: {fileID: 0}
+  addToDefaults: 0

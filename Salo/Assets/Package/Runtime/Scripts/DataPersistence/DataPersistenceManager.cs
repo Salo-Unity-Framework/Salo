@@ -29,7 +29,7 @@ namespace Salo.Infrastructure
             base.Awake();
 
             // Get the assigned persistor implementation
-            persistor = ConfigSOHolder.Instance.DataPersistenceConfig.DataPersistor;
+            persistor = InfrastructureSOHolder.Instance.DataPersistenceConfig.DataPersistor;
             Assert.IsNotNull(persistor);
         }
 
@@ -69,7 +69,7 @@ namespace Salo.Infrastructure
         private void handleResetAllRequested()
         {
             // Get the list of persisted runtime data and process the ones that are actually IPersistables
-            var runtimeDatas = ConfigSOHolder.Instance.DataPersistenceConfig.PersistedRuntimeDatas;
+            var runtimeDatas = InfrastructureSOHolder.Instance.DataPersistenceConfig.PersistedRuntimeDatas;
             foreach (var runtimeData in runtimeDatas)
             {
                 if (runtimeData is IPersistable persistable)
@@ -80,7 +80,7 @@ namespace Salo.Infrastructure
             }
 
             // Get the list of persisted configs and process the ones that are actually IPersistables
-            var configs = ConfigSOHolder.Instance.DataPersistenceConfig.PersistedConfigs;
+            var configs = InfrastructureSOHolder.Instance.DataPersistenceConfig.PersistedConfigs;
             foreach (var config in configs)
             {
                 if (config is IPersistable persistable)

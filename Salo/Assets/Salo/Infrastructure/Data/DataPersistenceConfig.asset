@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0490a35877b9f74419eab336abddc651, type: 3}
   m_Name: DataPersistenceConfig
   m_EditorClassIdentifier: 
-  dataPersistor: {fileID: 11400000, guid: c7a4f2bed9c8e1341b62bcedf043682a, type: 2}
+  dataPersistor: {fileID: 11400000, guid: 883312e1a95a6264ea3cd1368899d3dc, type: 2}
   persistedRuntimeDatas:
   - {fileID: 11400000, guid: ff6581bb15d982049b6bdc7eee1e92b0, type: 2}
   persistedConfigs:

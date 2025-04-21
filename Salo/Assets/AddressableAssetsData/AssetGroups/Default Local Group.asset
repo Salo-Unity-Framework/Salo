@@ -15,13 +15,18 @@ MonoBehaviour:
   m_GroupName: Default Local Group
   m_GUID: 08978af320c825f47a6a369e21760553
   m_SerializeEntries:
+  - m_GUID: 1f219379dfe20c4468ea8da3a35db9c9
+    m_Address: Assets/Salo/Infrastructure/Scenes/BootstrapScene.unity
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 61bd694c027e5c944874b8b975981071
     m_Address: Assets/App/Sandbox/TestScene.unity
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: beef54f6accb9784d8c7d5869f2c9959
-    m_Address: Assets/Package/Runtime/UserModifiable
+  - m_GUID: 6dbb3e4f5d25ed540950dfad4280530f
+    m_Address: Assets/Salo/Infrastructure/Data
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0

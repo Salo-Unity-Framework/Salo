@@ -24,16 +24,16 @@ namespace Salo.Infrastructure
         {
 #if UNITY_EDITOR
             // On Editor, ignore the event if EditorBootstrapper will take over
-            Assert.IsTrue(RuntimeDataSOHolder.Instance.SceneLoadRuntimeData.CurrentOpenSceneType != OpenSceneType.None,
+            Assert.IsTrue(InfrastructureSOHolder.Instance.SceneLoadRuntimeData.CurrentOpenSceneType != OpenSceneType.None,
                 "Encountered OpenSceneTYpe.None");
 
-            if (RuntimeDataSOHolder.Instance.SceneLoadRuntimeData.CurrentOpenSceneType == OpenSceneType.Others)
+            if (InfrastructureSOHolder.Instance.SceneLoadRuntimeData.CurrentOpenSceneType == OpenSceneType.Others)
             {
                 return;
             }
 #endif
 
-            SceneLoadEvents.MajorSceneLoadRequested(ConfigSOHolder.Instance.SceneLoadConfig.FirstScene);
+            SceneLoadEvents.MajorSceneLoadRequested(InfrastructureSOHolder.Instance.SceneLoadConfig.FirstScene);
         }
     }
 }

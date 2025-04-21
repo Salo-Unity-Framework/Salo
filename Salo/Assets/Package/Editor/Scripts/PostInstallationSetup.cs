@@ -10,9 +10,11 @@ namespace Salo.Infrastructure.EditorExtensions
     /// </summary>
     public static class PostInstallationSetup
     {
+        // REMOVED MenuItem: Will use manual setup for now
+        
         // This is meant to be run on projects that install the Framework,
         // and not on the project used for Framework development.
-        [MenuItem("Salo/Run first-time setup")]
+        //[MenuItem("Salo/Run first-time setup")]
         private static void setup()
         {
             moveUserModifiableFolder();

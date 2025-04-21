@@ -11,7 +11,7 @@ namespace Salo.Infrastructure
     {
         public async UniTask Load()
         {
-            var loaders = RuntimeDataSOHolder.Instance.BootstrapRuntimeData.BootstrapResourceLoaders;
+            var loaders = InfrastructureSOHolder.Instance.BootstrapRuntimeData.BootstrapResourceLoaders;
             var tasks = new UniTask[loaders.Count];
 
             for (int i = 0; i < tasks.Length; i++)

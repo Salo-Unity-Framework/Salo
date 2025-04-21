@@ -11,12 +11,12 @@ namespace Salo.Infrastructure
     {
         protected virtual void Awake()
         {
-            RuntimeDataSOHolder.Instance.BootstrapRuntimeData.BootstrapResourceLoaders.Add(this);
+            InfrastructureSOHolder.Instance.BootstrapRuntimeData.BootstrapResourceLoaders.Add(this);
         }
 
         protected virtual void OnDestroy()
         {
-            RuntimeDataSOHolder.Instance.BootstrapRuntimeData.BootstrapResourceLoaders.Remove(this);
+            InfrastructureSOHolder.Instance.BootstrapRuntimeData.BootstrapResourceLoaders.Remove(this);
         }
 
         // Should be implemented as an async method
