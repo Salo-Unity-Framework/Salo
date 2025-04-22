@@ -82,7 +82,7 @@ namespace Salo.Infrastructure.EditorExtensions
                 case OpenSceneType.BootstrapScene:
                 case OpenSceneType.Others:
                     // Set ZeroScene to load first
-                    EditorSceneManager.playModeStartScene = AssetDatabase.LoadAssetAtPath<SceneAsset>(sceneLoadConfig.ZeroScenePath);
+                    EditorSceneManager.playModeStartScene = AssetDatabase.LoadAssetAtPath<SceneAsset>(SceneHelper.ZeroScenePath);
                     break;
 
                 default:
@@ -134,10 +134,8 @@ namespace Salo.Infrastructure.EditorExtensions
 
         private static OpenSceneType getOpenSceneType(SceneLoadConfigSO sceneLoadConfig, string[] openScenePaths)
         {
-            var bootstrapScenePath = AssetDatabase.GUIDToAssetPath(sceneLoadConfig.BootstrapScene.AssetGUID);
-
-            if (openScenePaths.Contains(sceneLoadConfig.ZeroScenePath)) return OpenSceneType.ZeroScene;
-            if (openScenePaths.Contains(bootstrapScenePath)) return OpenSceneType.BootstrapScene;
+            if (openScenePaths.Contains(SceneHelper.ZeroScenePath)) return OpenSceneType.ZeroScene;
+            if (openScenePaths.Contains(SceneHelper.BootstrapScenePath)) return OpenSceneType.BootstrapScene;
             return OpenSceneType.Others;
         }
 

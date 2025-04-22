@@ -60,7 +60,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 29c7e566e9be03a48aa37aa5335dbe74, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  sceneLoadConfig: {fileID: 0}
-  dataPersistenceConfig: {fileID: 0}
-  bootstrapRuntimeData: {fileID: 0}
-  sceneLoadRuntimeData: {fileID: 0}
+  sceneLoadConfig: {fileID: 11400000, guid: c3e8641594ff5a24cbbd9c0a5752be66, type: 2}
+  dataPersistenceConfig: {fileID: 11400000, guid: 09de45d7e50542c448257bee954013cb, type: 2}
+  bootstrapRuntimeData: {fileID: 11400000, guid: 9ace9117e6195544d97d219918c63d98, type: 2}
+  sceneLoadRuntimeData: {fileID: 11400000, guid: 9d5bed5df57da0f44afa92327c46b21e, type: 2}

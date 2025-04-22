@@ -12,11 +12,9 @@ namespace Salo.Infrastructure
     /// </summary>
     public class ZeroScene : MonoBehaviour
     {
-        [SerializeField] private SceneLoadConfigSO sceneLoadConfig;
-
         private void Start()
         {
-            Addressables.LoadSceneAsync(sceneLoadConfig.BootstrapScene);
+            Addressables.LoadSceneAsync(SceneHelper.BootstrapScenePath);
         }
     }
 }
