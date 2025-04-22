@@ -9,12 +9,12 @@ namespace Salo.Infrastructure
     /// </summary>
     public abstract class SceneResourceLoaderBase : MonoBehaviour
     {
-        protected virtual void Awake()
+        protected virtual void OnEnable()
         {
             InfrastructureSOHolder.Instance.SceneLoadRuntimeData.SceneResourceLoaders.Add(this);
         }
 
-        protected virtual void OnDestroy()
+        protected virtual void OnDisable()
         {
             InfrastructureSOHolder.Instance.SceneLoadRuntimeData.SceneResourceLoaders.Remove(this);
         }

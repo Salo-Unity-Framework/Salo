@@ -8,6 +8,7 @@ namespace Salo.Infrastructure
     /// Since this is meant for bootstrapped systems, duplicate instances are not
     /// expected (as is in Singletons), and should be corrected if encountered.
     /// </summary>
+    [DefaultExecutionOrder(-100)]
     public abstract class StaticInstanceOf<T> : MonoBehaviour
         where T : MonoBehaviour
     {

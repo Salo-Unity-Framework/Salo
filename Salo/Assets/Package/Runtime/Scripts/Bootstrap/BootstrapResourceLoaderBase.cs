@@ -9,12 +9,12 @@ namespace Salo.Infrastructure
     /// </summary>
     public abstract class BootstrapResourceLoaderBase : MonoBehaviour
     {
-        protected virtual void Awake()
+        protected virtual void OnEnable()
         {
             InfrastructureSOHolder.Instance.BootstrapRuntimeData.BootstrapResourceLoaders.Add(this);
         }
 
-        protected virtual void OnDestroy()
+        protected virtual void OnDisable()
         {
             InfrastructureSOHolder.Instance.BootstrapRuntimeData.BootstrapResourceLoaders.Remove(this);
         }

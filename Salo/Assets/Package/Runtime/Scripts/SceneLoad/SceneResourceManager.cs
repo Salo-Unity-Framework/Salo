@@ -14,7 +14,7 @@ namespace Salo.Infrastructure
         // Run the load method on registered loaders. Called by SceneLoadManager
         public async UniTask Load()
         {
-            // Note: Loaders register themselves to the SceneLoadRuntimeData asset's ResourceLoaders on Awake
+            // Note: Loaders register themselves to the SceneLoadRuntimeData asset's ResourceLoaders on OnEnable
 
             var loaders = InfrastructureSOHolder.Instance.SceneLoadRuntimeData.SceneResourceLoaders;
             var tasks = new UniTask[loaders.Count];

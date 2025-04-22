@@ -99,6 +99,7 @@ namespace Salo.Infrastructure
                     await task;
                 }
             }
+            else 
             {
                 // Method not found declared on the concrete implementing task. Call the default extension method
                 await persistable.Load();
