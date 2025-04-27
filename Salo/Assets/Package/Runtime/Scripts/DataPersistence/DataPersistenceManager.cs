@@ -12,8 +12,6 @@ namespace Salo.Infrastructure
     /// </summary>
     public class DataPersistenceManager : StaticInstanceOf<DataPersistenceManager>
     {
-        private DataPersistorSOBase persistor; // Store the current implementation
-
         private void OnEnable()
         {
             DataPersistenceEvents.OnResetAllAndSaveRequested += handleResetAllRequested;
@@ -24,19 +22,12 @@ namespace Salo.Infrastructure
             DataPersistenceEvents.OnResetAllAndSaveRequested -= handleResetAllRequested;
         }
 
-        protected override void Awake()
-        {
-            base.Awake();
-
-            // Get the assigned persistor implementation
-            persistor = InfrastructureSOHolder.Instance.DataPersistenceConfig.DataPersistor;
-            Assert.IsNotNull(persistor);
-        }
-
         // Keeping IPersistable as the parameter so the data persistence
         // process is more robust. The instance is used to get the key.
         public void Save(IPersistable persistable, string data)
         {
+            var persistor = getPersistor();
+
             var key = persistable.GetType().Name; // class name
 
             var isSuccess = persistor.TryWriteString(key, data);
@@ -48,6 +39,8 @@ namespace Salo.Infrastructure
 
         public async UniTask<string> Load(IPersistable persistable)
         {
+            var persistor = getPersistor();
+
             var key = persistable.GetType().Name; // class name
             if (!persistor.HasKey(key))
             {
@@ -89,6 +82,17 @@ namespace Salo.Infrastructure
                     PersistenceHelper.CallConcreteSave(persistable);
                 }
             }
+        }
+
+        // Cannot get and store persistor on Awake since this is a StaticInstanceOf too. Which mean it shares
+        // the same execution order as other StaticInstanceOf, like InfrastructureSOHolder. We cannot be sure
+        // whether this class's Awake or InfrastructureSOHolder's Awake runs first.
+        private DataPersistorSOBase getPersistor()
+        {
+            var persistor = InfrastructureSOHolder.Instance.DataPersistenceConfig.DataPersistor;
+            Assert.IsNotNull(persistor);
+
+            return persistor;
         }
     }
 }
