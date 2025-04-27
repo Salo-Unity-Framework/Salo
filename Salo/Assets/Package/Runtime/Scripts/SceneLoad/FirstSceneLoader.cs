@@ -23,10 +23,9 @@ namespace Salo.Infrastructure
         private void handleFirstSceneLoadRequested()
         {
 #if UNITY_EDITOR
-            // On Editor, ignore the event if EditorBootstrapper will take over
-            Assert.IsTrue(InfrastructureSOHolder.Instance.SceneLoadRuntimeData.CurrentOpenSceneType != OpenSceneType.None,
-                "Encountered OpenSceneTYpe.None");
-
+            // On Editor, ignore the event if EditorBootstrapper will take over.
+            // Also, if Bootstrap is disabled, CurrentOpenSceneType is not set.
+            // Proceed as normal with FirstScene load in such cases.
             if (InfrastructureSOHolder.Instance.SceneLoadRuntimeData.CurrentOpenSceneType == OpenSceneType.Others)
             {
                 return;
