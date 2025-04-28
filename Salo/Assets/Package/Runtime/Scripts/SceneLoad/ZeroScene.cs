@@ -1,5 +1,4 @@
 using UnityEngine;
-using UnityEngine.AddressableAssets;
 
 namespace Salo.Infrastructure
 {
@@ -12,9 +11,11 @@ namespace Salo.Infrastructure
     /// </summary>
     public class ZeroScene : MonoBehaviour
     {
+        [SerializeField] private SceneReference bootstrapScene;
+
         private void Start()
         {
-            Addressables.LoadSceneAsync(SceneHelper.BootstrapScenePath);
+            bootstrapScene.LoadSceneAsync();
         }
     }
 }
