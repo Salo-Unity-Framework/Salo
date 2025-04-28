@@ -2,7 +2,7 @@
 %TAG !u! tag:unity3d.com,2011:
 --- !u!114 &11400000
 MonoBehaviour:
-  m_ObjectHideFlags: 52
+  m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
@@ -12,4 +12,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9b2768230adc64742b4bdbe0639afe0a, type: 3}
   m_Name: SceneLoadRuntimeData
   m_EditorClassIdentifier: 
-  Temp: 0
+  SceneResourceLoaders: []
+  CurrentSceneFader: {fileID: 0}
+  CurrentOpenSceneType: 0
+  OpenScenePaths: []
+  ExpandedObjectPaths: []
+  SelectedObjectPath: 

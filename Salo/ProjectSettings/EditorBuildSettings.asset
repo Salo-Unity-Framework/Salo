@@ -8,7 +8,7 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Package/Runtime/Scenes/ZeroScene.unity
     guid: 9abb5e16abb5ffd4db6c1094aa3aad53
-  - enabled: 1
+  - enabled: 0
     path: Assets/Salo/Infrastructure/Scenes/BootstrapScene.unity
     guid: 1f219379dfe20c4468ea8da3a35db9c9
   m_configObjects:

@@ -7,7 +7,7 @@ namespace Salo.Infrastructure
     {
         public async override UniTask Load()
         {
-            Debug.Log("Loading persted data");
+            Debug.Log("Loading persisted data");
 
             // Get the list of persisted runtime data and process the ones that are actually IPersistables
             var runtimeDatas = InfrastructureSOHolder.Instance.DataPersistenceConfig.PersistedRuntimeDatas;
