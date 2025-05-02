@@ -10,6 +10,7 @@ GameObject:
   m_Component:
   - component: {fileID: 430907384696681798}
   - component: {fileID: 2550776271577923472}
+  - component: {fileID: 7699018865123679026}
   m_Layer: 0
   m_Name: DataPersistence
   m_TagString: Untagged
@@ -44,61 +45,16 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a7ab88948d3ad354d80c889be887caa7, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
---- !u!1 &2234992462278601025
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 4378268829075269941}
-  - component: {fileID: 3262032057028387991}
-  - component: {fileID: 6671201786410074059}
-  m_Layer: 0
-  m_Name: AppBootstrap
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!4 &4378268829075269941
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2234992462278601025}
-  serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 1933589640035167998}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &3262032057028387991
+--- !u!114 &7699018865123679026
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2234992462278601025}
+  m_GameObject: {fileID: 433402987758702187}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: ed4a75c2471886f4ba56d739164a5f4c, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
---- !u!114 &6671201786410074059
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2234992462278601025}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: b736dd46d46e6b34386fbb6b87b6afe7, type: 3}
+  m_Script: {fileID: 11500000, guid: 80dcbfcf196da5a4b9ed6045a41a5047, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
 --- !u!1 &6533121078490816863
@@ -180,10 +136,9 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 19194521773808390}
-  - component: {fileID: 1924001231242137576}
-  - component: {fileID: 3347707217736397081}
+  - component: {fileID: 1264923387907509182}
   m_Layer: 0
-  m_Name: BootstrapResourceLoaders
+  m_Name: BootstrapResourceLoad
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -204,7 +159,7 @@ Transform:
   m_Children: []
   m_Father: {fileID: 1933589640035167998}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &1924001231242137576
+--- !u!114 &1264923387907509182
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -213,21 +168,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 8756968541411615759}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 8e02cb39a6389f240af4d33899761bc5, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  comment: Keep all BootstrapResourceLoaderBase implementor instances on a single
-    game object so they can be destroyed more easily
---- !u!114 &3347707217736397081
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8756968541411615759}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 80dcbfcf196da5a4b9ed6045a41a5047, type: 3}
+  m_Script: {fileID: 11500000, guid: b736dd46d46e6b34386fbb6b87b6afe7, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
 --- !u!1 &8976248193601906643
@@ -259,9 +200,8 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
-  - {fileID: 4378268829075269941}
+  - {fileID: 19194521773808390}
   - {fileID: 4329136290587610347}
   - {fileID: 430907384696681798}
-  - {fileID: 19194521773808390}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}

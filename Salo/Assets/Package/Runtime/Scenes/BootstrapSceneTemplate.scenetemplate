@@ -17,6 +17,8 @@ MonoBehaviour:
   description: Create a scene from this template on Framework installation
   preview: {fileID: 0}
   dependencies:
+  - dependency: {fileID: 1133084093071901397, guid: e9314446c68be3f42b8873b9f676c614, type: 3}
+    instantiationMode: 0
   - dependency: {fileID: 3906815615208075064, guid: b452440dfafcdbf4eb7f1591a75cadca, type: 3}
     instantiationMode: 0
   - dependency: {fileID: 8976248193601906643, guid: ab41364df3f10db45b99428d1d65a874, type: 3}

@@ -22,7 +22,13 @@ namespace Salo.Infrastructure
 
             await UniTask.WhenAll(tasks);
 
-            Debug.Log($"Bootstrap resource loading complete. Processed {tasks.Length}/{loaders.Count} loaders");
+            Debug.Log($"Bootstrap resource loading complete. Processed {tasks.Length}/{loaders.Count} loaders. Removing loader components...");
+
+            // Remove loader components to save resources
+            for (int i = loaders.Count - 1; i >= 0; i--)
+            {
+                Destroy(loaders[i]); // Destroy the component, not the game object
+            }
         }
     }
 }
