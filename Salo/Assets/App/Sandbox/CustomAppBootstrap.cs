@@ -8,7 +8,7 @@ public class CustomAppBootstrap : AppBootstrap
     {
         Debug.Log("CustomAppBpptstrap");
 
-        await UniTask.Delay(500);
+        await UniTask.Delay(500); // and other custom stuff
 
         base.bootstrap().Forget();
     }

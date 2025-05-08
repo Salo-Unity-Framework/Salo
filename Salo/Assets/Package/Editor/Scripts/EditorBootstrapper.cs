@@ -146,19 +146,10 @@ namespace Salo.Infrastructure.EditorExtensions
             var settings = AddressableAssetSettingsDefaultObject.Settings;
             Assert.IsNotNull(settings);
 
-            foreach (var group in settings.groups)
-            {
-                foreach (var entry in group.entries)
-                {
-                    if (entry.AssetPath == scenePath)
-                    {
-                        return new SceneReference(entry.guid);
-                    }
-                }
-            }
+            Assert.IsTrue(AssetDatabase.AssetPathExists(scenePath), $"Addressable asset not found at {scenePath}");
+            var sceneGuid = AssetDatabase.AssetPathToGUID(scenePath);
 
-            // The asset was not found. Throw an exception
-            throw new ArgumentException($"Addressable asset not found at {scenePath}");
+            return new SceneReference(sceneGuid);
         }
     }
 }
