@@ -23,11 +23,19 @@ namespace Salo.Infrastructure
             => OnMajorSceneLoadRequested?.Invoke(sceneReference);
 
         /// <summary>
-        /// Request to reload the currently loaded Major scene.  Handled by SceneLoadManager.
+        /// Request to reload the currently loaded Major scene. Handled by SceneLoadManager.
         /// </summary>
         public static event Action OnReloadRequested;
         public static void ReloadRequested()
             => OnReloadRequested?.Invoke();
+
+        /// <summary>
+        /// Request to reload the scene assigned to SceneLoadConfig.TitleScene.
+        /// Handled by SceneLoadManager.
+        /// </summary>
+        public static event Action OnTitleSceneLoadRequested;
+        public static void TitleSceneLoadRequested()
+            => OnTitleSceneLoadRequested?.Invoke();
 
         /// <summary>
         /// Notify start of scene fadeout. Invoked by SceneLoadManager

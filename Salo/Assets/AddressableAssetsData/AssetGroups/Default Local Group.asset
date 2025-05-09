@@ -30,6 +30,11 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 95a2dfe1826d49043aa4203c1b6d1ce0
+    m_Address: Assets/App/Sandbox/TestScene2.unity
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
   m_ReadOnly: 0
   m_Settings: {fileID: 11400000, guid: 9e64a023f285d9b4a8a8146b9c6157bd, type: 2}
   m_SchemaSet:

@@ -22,12 +22,14 @@ namespace Salo.Infrastructure
         {
             SceneLoadEvents.OnMajorSceneLoadRequested += handleMajorSceneLoadRequested;
             SceneLoadEvents.OnReloadRequested += handleReloadRequested;
+            SceneLoadEvents.OnTitleSceneLoadRequested += handleTitleSceneLoadRequested;
         }
 
         private void OnDisable()
         {
             SceneLoadEvents.OnMajorSceneLoadRequested -= handleMajorSceneLoadRequested;
             SceneLoadEvents.OnReloadRequested -= handleReloadRequested;
+            SceneLoadEvents.OnTitleSceneLoadRequested -= handleTitleSceneLoadRequested;
         }
 
         private async void handleMajorSceneLoadRequested(SceneReference sceneReference)
@@ -77,6 +79,12 @@ namespace Salo.Infrastructure
         {
             Assert.IsNotNull(loadedMajorSceneReference);
             SceneLoadEvents.MajorSceneLoadRequested(loadedMajorSceneReference);
+        }
+
+        private void handleTitleSceneLoadRequested()
+        {
+            var sceneReference = InfrastructureSOHolder.Instance.SceneLoadConfig.TitleScene;
+            SceneLoadEvents.MajorSceneLoadRequested(sceneReference);
         }
 
         public async UniTask unloadCurrentSceneAndResources()
