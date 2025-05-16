@@ -106,7 +106,7 @@ namespace Salo.Infrastructure.EditorExtensions
             }
         }
 
-        private static void handleMajorSceneLoaded(Scene _)
+        private static void handleMajorSceneLoaded()
         {
             // Restore scene hierarachy expanded states and selection. This will run on loading completion
             // of either FirstScene (FirstSceneLoader) or the Editor open scenes (EditorBootstrapper).

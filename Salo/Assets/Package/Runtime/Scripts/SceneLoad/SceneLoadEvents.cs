@@ -57,9 +57,9 @@ namespace Salo.Infrastructure
         /// before OnSceneReady, before the SceneResourceLoad.
         /// Invoked by SceneLoadManager.
         /// </summary>
-        public static event Action<Scene> OnMajorSceneLoaded;
-        public static void MajorSceneLoaded(Scene scene)
-            => OnMajorSceneLoaded?.Invoke(scene);
+        public static event Action OnMajorSceneLoaded;
+        public static void MajorSceneLoaded()
+            => OnMajorSceneLoaded?.Invoke();
 
         /// <summary>
         /// A Major scene has been loaded by SceneLoadManager, and the scenes
@@ -69,5 +69,12 @@ namespace Salo.Infrastructure
         public static event Action OnSceneReady;
         public static void SceneReady()
             => OnSceneReady?.Invoke();
+
+        /// <summary>
+        /// A Major scene load process has failed. Invoked by SceneLoadManager
+        /// </summary>
+        public static event Action OnMajorSceneLoadFailed;
+        public static void MajorSceneLoadFailed()
+            => OnMajorSceneLoadFailed?.Invoke();
     }
 }

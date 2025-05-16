@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 namespace Salo.Infrastructure
 {
@@ -8,6 +9,12 @@ namespace Salo.Infrastructure
     {
         [Tooltip("Subclasses of SceneResourceLoaderBase will add and remove themselves from this list")]
         public List<SceneResourceLoaderBase> SceneResourceLoaders = new();
+
+        [Tooltip("Currently loaded Addressable SceneReference")]
+        public SceneReference LoadedSceneReference;
+
+        [Tooltip("Currently loaded Scene struct")]
+        public Scene LoadedScene;
 
         [Tooltip("Subclasses of SceneFaderBase will assign and remove themselves to this. To be used by SceneLoadManager")]
         public SceneFaderBase CurrentSceneFader;

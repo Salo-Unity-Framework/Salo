@@ -16,7 +16,6 @@ namespace Salo.Infrastructure
         private bool isLoadingMajorScene = false;
 
         private SceneInstance loadedMajorSceneInstance;
-        private SceneReference loadedMajorSceneReference;
 
         private void OnEnable()
         {
@@ -61,24 +60,33 @@ namespace Salo.Infrastructure
             // Unload current major scene and its resources if any
             await unloadCurrentSceneAndResources();
 
-            var loadedScene = await loadMajorScene(sceneReference);
-            SceneLoadEvents.MajorSceneLoaded(loadedScene);
+            var isSuccess = await loadMajorScene(sceneReference);
 
-            await SceneResourceManager.Instance.Load();
+            if (isSuccess)
+            {
+                SceneLoadEvents.MajorSceneLoaded();
 
-            isLoadingMajorScene = false;
+                await SceneResourceManager.Instance.Load();
 
-            SceneLoadEvents.SceneReady();
+                isLoadingMajorScene = false;
+                SceneLoadEvents.SceneReady();
 
-            // Note: SceneFaders may implement their own fade-in logic. If they do, they
-            // should start the logic - it will not be started from here as there isn't
-            // anything that waits for the fade-in to finish here (yet).
+                // Note: SceneFaders may implement their own fade-in logic. If they do, they
+                // should start the logic - it will not be started from here as there isn't
+                // anything that waits for the fade-in to finish here (yet).
+            }
+            else
+            {
+                isLoadingMajorScene = false;
+                SceneLoadEvents.MajorSceneLoadFailed();
+            }
         }
 
         private void handleReloadRequested()
         {
-            Assert.IsNotNull(loadedMajorSceneReference);
-            SceneLoadEvents.MajorSceneLoadRequested(loadedMajorSceneReference);
+            var sceneLoadRuntimeData = InfrastructureSOHolder.Instance.SceneLoadRuntimeData;
+            Assert.IsNotNull(sceneLoadRuntimeData.LoadedSceneReference);
+            SceneLoadEvents.MajorSceneLoadRequested(sceneLoadRuntimeData.LoadedSceneReference);
         }
 
         private void handleTitleSceneLoadRequested()
@@ -115,7 +123,7 @@ namespace Salo.Infrastructure
             Addressables.Release(handle);
         }
 
-        private async UniTask<Scene> loadMajorScene(SceneReference sceneReference)
+        private async UniTask<bool> loadMajorScene(SceneReference sceneReference)
         {
             // Load the scene without activating to avoid calls to Start
             // before the scene is set as the active scene.
@@ -123,29 +131,32 @@ namespace Salo.Infrastructure
             await handle.Task.AsUniTask();
 
             // Process load result
-            if (handle.Status == AsyncOperationStatus.Succeeded)
+            if (handle.Status != AsyncOperationStatus.Succeeded)
             {
-                loadedMajorSceneInstance = handle.Result;
-                loadedMajorSceneReference = sceneReference;
-
-                // Manually activate the scene since it was loaded using activateOnLoad = false
-                // HACK: Setting activateOnLoad = false and manually activating the scene here
-                // somehow fixes the issue with Start being called on the loaded scene's
-                // script before it was set active - this resulted in objects being
-                // instantiated in other scenes if instantiated in Start.
-                await handle.Result.ActivateAsync();
-
-                Debug.Log($"Major scene loaded: {loadedMajorSceneInstance.Scene.name}");
-
-                // Note: Loaded major scene. Set it active
-                SceneManager.SetActiveScene(loadedMajorSceneInstance.Scene);
-            }
-            else if (handle.Status == AsyncOperationStatus.Failed)
-            {
-                Debug.LogError($"Failed to load major scene. GUID: {sceneReference.AssetGUID}");
+                Debug.LogError($"Failed to load major scene. RuntimeKey: {sceneReference.RuntimeKey}");
+                return false;
             }
 
-            return handle.Result.Scene;
+            // Load successful
+
+            var sceneLoadRuntimeData = InfrastructureSOHolder.Instance.SceneLoadRuntimeData;
+            sceneLoadRuntimeData.LoadedSceneReference = sceneReference;
+            sceneLoadRuntimeData.LoadedScene = handle.Result.Scene;
+            loadedMajorSceneInstance = handle.Result;
+
+            // Manually activate the scene since it was loaded using activateOnLoad = false
+            // HACK: Setting activateOnLoad = false and manually activating the scene here
+            // somehow fixes the issue with Start being called on the loaded scene's
+            // script before it was set active - this resulted in objects being
+            // instantiated in other scenes if instantiated in Start.
+            await handle.Result.ActivateAsync();
+
+            Debug.Log($"Major scene loaded: {loadedMajorSceneInstance.Scene.name}");
+
+            // Note: Loaded major scene. Set it active
+            SceneManager.SetActiveScene(loadedMajorSceneInstance.Scene);
+
+            return true;
         }
     }
 }
