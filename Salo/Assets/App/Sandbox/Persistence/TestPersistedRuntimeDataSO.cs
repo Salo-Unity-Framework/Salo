@@ -40,17 +40,21 @@ public class TestPersistedRuntimeDataSO : RuntimeDataSOBase, IPersistable
             PersistedDateTime = DateTime.MinValue;
         }
     }
-
+    
     public override void ResetData()
     {
-        // This resets the Serailized fields only
+        // This resets the instance's public and private fields (unless they are [NonSerialized]).
+        // This includes fields that are not serialized by Unity, so this elminates the need to
+        // explicitly propagate the changes to non-Serialized fields (commented out below).
+        // This means this override can now be omitted.
         ScriptableObjectHelper.ResetToTypeDefaults(this);
 
-        // Propagate the reset data to non-Serialized fields
-        if (!DateTime.TryParse(persistedDateTimeString, null, DateTimeStyles.RoundtripKind, out PersistedDateTime))
-        {
-            // Parse failed. Assign default
-            PersistedDateTime = DateTime.MinValue;
-        }
+        // DELETED: ScriptableObjectHelper.ResetToTypeDefaults now resets non-Serialized fields too
+        //// Propagate the reset data to non-Serialized fields
+        //if (!DateTime.TryParse(persistedDateTimeString, null, DateTimeStyles.RoundtripKind, out PersistedDateTime))
+        //{
+        //    // Parse failed. Assign default
+        //    PersistedDateTime = DateTime.MinValue;
+        //}
     }
 }

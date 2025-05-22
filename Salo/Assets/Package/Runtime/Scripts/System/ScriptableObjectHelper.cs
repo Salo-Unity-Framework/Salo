@@ -1,3 +1,5 @@
+using System;
+using System.Reflection;
 using UnityEngine;
 using UnityEngine.Assertions;
 
@@ -16,13 +18,21 @@ namespace Salo.Infrastructure
         public static void ResetToTypeDefaults(ScriptableObject obj)
         {
             Assert.IsNotNull(obj);
-            // Create a new instance - this will have default values
-            var tempInstance = ScriptableObject.CreateInstance(obj.GetType());
-            var defaultJsonString = JsonUtility.ToJson(tempInstance);
 
-            // Assign values from the instance with default values
-            JsonUtility.FromJsonOverwrite(defaultJsonString, obj);
-            Object.DestroyImmediate(tempInstance);
+            // Reset instance's public and private fields
+            var flags = BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic;
+
+            var type = obj.GetType();
+            foreach (var field in type.GetFields(flags))
+            {
+                // Skip fields marked with [NonSerialized]
+                if (field.IsNotSerialized) continue;
+
+                // Default value is a new instance for Value types, null for others
+                var defaultValue = field.FieldType.IsValueType ? Activator.CreateInstance(field.FieldType) : null;
+
+                field.SetValue(obj, defaultValue);
+            }
         }
     }
 }
