@@ -1,4 +1,4 @@
-#Salo
+# Salo
 
 Salo is a Unity codebase architecture framework that provides a bootstrapped scene system, along with other utilities for data persistence, and cross-component data and event systems.
 
