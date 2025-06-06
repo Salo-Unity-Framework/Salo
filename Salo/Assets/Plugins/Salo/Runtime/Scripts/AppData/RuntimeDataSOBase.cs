@@ -38,7 +38,8 @@ namespace Salo.Infrastructure
         {
             if (state == PlayModeStateChange.EnteredEditMode)
             {
-                ScriptableObjectHelper.ResetToTypeDefaults(this);
+                // Note: "this" can be null for in-memory SO assets (for instance)
+                if (null != this) ScriptableObjectHelper.ResetToTypeDefaults(this);
             }
         }
 

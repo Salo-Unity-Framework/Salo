@@ -1,7 +1,6 @@
 using System;
 using System.Reflection;
 using UnityEngine;
-using UnityEngine.Assertions;
 
 namespace Salo.Infrastructure
 {
@@ -17,7 +16,11 @@ namespace Salo.Infrastructure
         /// </summary>
         public static void ResetToTypeDefaults(ScriptableObject obj)
         {
-            Assert.IsNotNull(obj);
+            if (null == obj)
+            {
+                Debug.LogError("Encountered null parameter. Ignoring...");
+                return;
+            }
 
             // Reset instance's public and private fields
             var flags = BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic;

@@ -1,13 +1,14 @@
 {
   "name": "com.vanlalhriata.salo",
   "displayName": "Salo",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "unity": "2022.3",
   "description": "Salo is a lightweight codebase architecture for Unity.",
   "documentationUrl": "https://www.notion.so/Salo-Manual-1d15eb3be3278058876cd7eb3bf055b4",
   "licensesUrl": "https://www.notion.so/Salo-License-2045eb3be327804eb319e56c2fcd5feb",
+  "changelogUrl": "https://www.notion.so/Salo-Changelog-20a5eb3be3278030afaec59c57393921",
   "dependencies": {
-    "com.unity.addressables": "2.2.2"
+    "com.unity.addressables": "2.5.0"
   },
   "author": {
     "name": "Vanlal Hriata",
