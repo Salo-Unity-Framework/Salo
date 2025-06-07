@@ -25,10 +25,6 @@ namespace Salo.Infrastructure
 
         // NOTE: Values here persist from PlayModeStateChange of ExitingEditMode to EnteringPlayMode
 
-        [Tooltip("Normally, FirstSceneLoader handles OnFirstSceneLoadRequested events. However, on"
-            + " OpenSceneType.Others, EditorBootstrapper hijacks the event and takes over.")]
-        public OpenSceneType CurrentOpenSceneType;
-
         [Tooltip("The paths to scenes that were open in the Editor before Play")]
         public string[] OpenScenePaths;
 
@@ -38,6 +34,9 @@ namespace Salo.Infrastructure
         [Tooltip("The path to the selected object in the scene hierarchy")]
         public string SelectedObjectPath;
 
+        // Used as key in SessionState. Normally, FirstSceneLoader handles OnFirstSceneLoadRequested events.
+        // However, on OpenSceneType.Others, EditorBootstrapper hijacks the event and takes over.
+        public const string OPEN_SCENE_TYPE_KEY = "OPEN_SCENE_TYPE";
 #endif
     }
 }
