@@ -7,8 +7,16 @@ namespace Salo.Infrastructure
     [CreateAssetMenu(fileName = "SceneLoadRuntimeData", menuName = "Salo/Runtime Data/Scene Load Runtime Data")]
     public class SceneLoadRuntimeDataSO : RuntimeDataSOBase
     {
-        [Tooltip("Subclasses of SceneResourceLoaderBase will add and remove themselves from this list")]
-        public List<SceneResourceLoaderBase> SceneResourceLoaders = new();
+        // Subclasses of SceneResourceLoaderBase will add and remove themselves from this list
+        private List<SceneResourceLoaderBase> sceneResourceLoaders;
+        public List<SceneResourceLoaderBase> SceneResourceLoaders
+        {
+            get
+            {
+                if (null == sceneResourceLoaders) sceneResourceLoaders = new();
+                return sceneResourceLoaders;
+            }
+        }
 
         [Tooltip("Currently loaded Addressable SceneReference")]
         public SceneReference LoadedSceneReference;

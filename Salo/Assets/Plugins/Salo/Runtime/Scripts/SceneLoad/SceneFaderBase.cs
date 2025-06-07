@@ -26,7 +26,10 @@ namespace Salo.Infrastructure
 
         protected virtual void OnDisable()
         {
-            InfrastructureSOHolder.Instance.SceneLoadRuntimeData.CurrentSceneFader = null;
+            if (Application.isPlaying)
+            {
+                InfrastructureSOHolder.Instance.SceneLoadRuntimeData.CurrentSceneFader = null;
+            }
         }
 
         /// <summary>
