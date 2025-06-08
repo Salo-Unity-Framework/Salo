@@ -66,14 +66,15 @@ namespace Salo.Infrastructure.EditorExtensions
 
             SceneHierarchyPerserver.SaveHierarchyState(); // saves to sceneLoadRuntimeData
 
-            // Save to SO so the info persists through to processEnteringPlayMode
-            sceneLoadRuntimeData.CurrentOpenSceneType = getOpenSceneType(sceneLoadConfig, sceneLoadRuntimeData.OpenScenePaths);
+            // Save to SessionState so the info persists through to processEnteringPlayMode
+            var openSceneType = getOpenSceneType(sceneLoadConfig, sceneLoadRuntimeData.OpenScenePaths);
+            SessionState.SetString(SceneLoadRuntimeDataSO.OPEN_SCENE_TYPE_KEY, openSceneType.ToString());
 
             // If the active scene is the zero scene, there is nothing to change.
             // ZeroScene should run normally and will load BootstrapScene.
             // Note that this is run on InitializeOnLoadMethod and will
             // take effect on the next Editor Play only.
-            switch (sceneLoadRuntimeData.CurrentOpenSceneType)
+            switch (openSceneType)
             {
                 case OpenSceneType.ZeroScene:
                     EditorSceneManager.playModeStartScene = null;
@@ -86,7 +87,7 @@ namespace Salo.Infrastructure.EditorExtensions
                     break;
 
                 default:
-                    throw new ArgumentException($"Invalid open scene type: {sceneLoadRuntimeData.CurrentOpenSceneType}");
+                    throw new ArgumentException($"Invalid open scene type: {openSceneType}");
             }
         }
 
@@ -99,8 +100,11 @@ namespace Salo.Infrastructure.EditorExtensions
             SceneLoadEvents.OnMajorSceneLoaded -= handleMajorSceneLoaded;
             SceneLoadEvents.OnMajorSceneLoaded += handleMajorSceneLoaded;
 
+            var openSceneTypeString = SessionState.GetString(SceneLoadRuntimeDataSO.OPEN_SCENE_TYPE_KEY, null);
+            var openSceneType = Enum.Parse<OpenSceneType>(openSceneTypeString);
+
             var sceneLoadRuntimeData = SOLoaderEditor.GetUniqueAsset<SceneLoadRuntimeDataSO>();
-            if (sceneLoadRuntimeData.CurrentOpenSceneType == OpenSceneType.Others)
+            if (openSceneType == OpenSceneType.Others)
             {
                 SceneLoadEvents.OnFirstSceneLoadRequested += handleFirstSceneLoadRequested;
             }

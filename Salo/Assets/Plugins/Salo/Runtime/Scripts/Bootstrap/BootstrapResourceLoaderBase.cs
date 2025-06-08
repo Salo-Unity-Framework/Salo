@@ -16,7 +16,10 @@ namespace Salo.Infrastructure
 
         protected virtual void OnDisable()
         {
-            InfrastructureSOHolder.Instance.BootstrapRuntimeData.BootstrapResourceLoaders.Remove(this);
+            if (Application.isPlaying)
+            {
+                InfrastructureSOHolder.Instance.BootstrapRuntimeData.BootstrapResourceLoaders.Remove(this);
+            }
         }
 
         // Should be implemented as an async method

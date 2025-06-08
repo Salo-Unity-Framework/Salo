@@ -25,7 +25,11 @@ namespace Salo.Infrastructure
             // On Editor, ignore the event if EditorBootstrapper will take over.
             // Also, if Bootstrap is disabled, CurrentOpenSceneType is not set.
             // Proceed as normal with FirstScene load in such cases.
-            if (InfrastructureSOHolder.Instance.SceneLoadRuntimeData.CurrentOpenSceneType == OpenSceneType.Others)
+
+            var openSceneTypeString = UnityEditor.SessionState.GetString(SceneLoadRuntimeDataSO.OPEN_SCENE_TYPE_KEY, null);
+            var openSceneType = System.Enum.Parse<OpenSceneType>(openSceneTypeString);
+
+            if (openSceneType == OpenSceneType.Others)
             {
                 return;
             }
