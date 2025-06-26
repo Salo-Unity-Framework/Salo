@@ -1,6 +1,7 @@
 using Cysharp.Threading.Tasks;
 using Salo.Infrastructure;
 using System;
+using System.Collections.Generic;
 using System.Globalization;
 using UnityEngine;
 
@@ -17,6 +18,9 @@ public class TestPersistedRuntimeDataSO : RuntimeDataSOBase, IPersistable
     // Handle in "overridden" Save, Load, and ResetData.
     public DateTime PersistedDateTime;
     [Persisted, InspectorReadOnly, SerializeField] private string persistedDateTimeString;
+
+    // Persisted list of floats
+    [Persisted] public List<float> PersistedRuntimeFloats;
 
     // "Override" of the extension method to run custom code before saving.
     // For example, convert non-Serializable fields to Serializable ones.
