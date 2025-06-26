@@ -41,8 +41,8 @@ namespace Salo.Infrastructure.EditorExtensions
         // Runs early on starting Editor Play. Note that Debug logs and class fields set here are cleared
         private static void processExitingEditMode()
         {
-            var sceneLoadConfig = SOLoaderEditor.GetUniqueAsset<SceneLoadConfigSO>();
-            var sceneLoadRuntimeData = SOLoaderEditor.GetUniqueAsset<SceneLoadRuntimeDataSO>();
+            // Clear previously set SessionState value
+            SessionState.EraseString(SceneLoadRuntimeDataSO.OPEN_SCENE_TYPE_KEY);
 
             // If bootstrapping is disabled, skip everything and load as normal
             if (!BootstrapOnPlayMenuItem.IsBootstrapOnPlayEnabled())
@@ -53,6 +53,9 @@ namespace Salo.Infrastructure.EditorExtensions
 
             // Save changes to open scenes
             EditorSceneManager.SaveOpenScenes();
+
+            var sceneLoadConfig = SOLoaderEditor.GetUniqueAsset<SceneLoadConfigSO>();
+            var sceneLoadRuntimeData = SOLoaderEditor.GetUniqueAsset<SceneLoadRuntimeDataSO>();
 
             // Save all the open scenes. We need to know if ZeroScene or BootstrapScene was
             // open to direct scene load flow. Also, to load the open scenes if needed.
@@ -96,6 +99,9 @@ namespace Salo.Infrastructure.EditorExtensions
         // event subscriptions should be done here instead of processExitingEditMode.
         private static void processEnteringPlayMode()
         {
+            // Do nothing if bootstrapping is disabled
+            if (!BootstrapOnPlayMenuItem.IsBootstrapOnPlayEnabled()) return;
+
             // Restore hierarchy states on scene load
             SceneLoadEvents.OnMajorSceneLoaded -= handleMajorSceneLoaded;
             SceneLoadEvents.OnMajorSceneLoaded += handleMajorSceneLoaded;
