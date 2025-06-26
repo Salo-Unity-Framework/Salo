@@ -12,17 +12,19 @@ namespace Salo.Infrastructure
         public async UniTask Load()
         {
             var loaders = InfrastructureSOHolder.Instance.BootstrapRuntimeData.BootstrapResourceLoaders;
-            var tasks = new UniTask[loaders.Count];
+            int actualLoaderCount = 0;
 
-            for (int i = 0; i < tasks.Length; i++)
+            for (int i = 0; i < loaders.Count; i++)
             {
                 if (null == loaders[i]) continue; // Avoid invalid tasks
-                tasks[i] = loaders[i].Load();
+
+                // Wait for each loader to complete before moving to the next one.
+                // This allows loaders to batch loading across multiple frames.
+                await loaders[i].Load();
+                actualLoaderCount++;
             }
 
-            await UniTask.WhenAll(tasks);
-
-            Debug.Log($"Bootstrap resource loading complete. Processed {tasks.Length}/{loaders.Count} loaders. Removing loader components...");
+            Debug.Log($"Bootstrap resource loading complete. Processed {actualLoaderCount}/{loaders.Count} loaders. Removing loader components...");
 
             // Remove loader components to save resources
             for (int i = loaders.Count - 1; i >= 0; i--)

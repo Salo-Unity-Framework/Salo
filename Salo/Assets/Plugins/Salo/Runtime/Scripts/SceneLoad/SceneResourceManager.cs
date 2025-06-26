@@ -17,17 +17,19 @@ namespace Salo.Infrastructure
             // Note: Loaders register themselves to the SceneLoadRuntimeData asset's ResourceLoaders on OnEnable
 
             var loaders = InfrastructureSOHolder.Instance.SceneLoadRuntimeData.SceneResourceLoaders;
-            var tasks = new UniTask[loaders.Count];
+            int actualLoaderCount = 0;
 
-            for (int i = 0; i < tasks.Length; i++)
+            for (int i = 0; i < loaders.Count; i++)
             {
                 if (null == loaders[i]) continue; // Avoid invalid tasks
-                tasks[i] = loaders[i].Load();
+
+                // Wait for each loader to complete before moving to the next one.
+                // This allows loaders to batch loading across multiple frames.
+                await loaders[i].Load();
+                actualLoaderCount++;
             }
 
-            await UniTask.WhenAll(tasks);
-
-            Debug.Log($"Scene resource loading complete. Processed {tasks.Length}/{loaders.Count} loaders");
+            Debug.Log($"Scene resource loading complete. Processed {actualLoaderCount}/{loaders.Count} loaders");
         }
 
         // Run the unload method on registered loaders. Called by SceneLoadManager
