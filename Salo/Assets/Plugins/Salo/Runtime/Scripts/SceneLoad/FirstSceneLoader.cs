@@ -22,16 +22,21 @@ namespace Salo.Infrastructure
         private void handleFirstSceneLoadRequested()
         {
 #if UNITY_EDITOR
-            // On Editor, ignore the event if EditorBootstrapper will take over.
-            // Also, if Bootstrap is disabled, CurrentOpenSceneType is not set.
-            // Proceed as normal with FirstScene load in such cases.
+            // If Bootstrap is disabled SessionState's OPEN_SCENE_TYPE is not assigned.
+            // In that case, proceed as normal with FirstScene load. Else on Editor,
+            // ignore this if EditorBootstrapper will take over (Others scene type).
 
             var openSceneTypeString = UnityEditor.SessionState.GetString(SceneLoadRuntimeDataSO.OPEN_SCENE_TYPE_KEY, null);
-            var openSceneType = System.Enum.Parse<OpenSceneType>(openSceneTypeString);
 
-            if (openSceneType == OpenSceneType.Others)
+            if (string.IsNullOrEmpty(openSceneTypeString))
             {
-                return;
+                // SessionState's OPEN_SCENE_TYPE is not assigned. Bootstrap is disabled. Proceed as normal
+            }
+            else
+            {
+                // Else EditorBootatrapper will take over on OpenSceneType of 'Others'. Ignore this event
+                var openSceneType = System.Enum.Parse<OpenSceneType>(openSceneTypeString);
+                if (openSceneType == OpenSceneType.Others) return;
             }
 #endif
 

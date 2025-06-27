@@ -1,5 +1,6 @@
 using Salo.Infrastructure;
 using System;
+using System.Collections.Generic;
 using UnityEngine;
 
 public class PersistenceTest : MonoBehaviour
@@ -23,6 +24,7 @@ public class PersistenceTest : MonoBehaviour
             runtimeDataSO.DefaultRuntimeInt = 10; // will reset to int's default (0) on stopping Play
             runtimeDataSO.PersistedRuntimeInt = 20; // this value will be restored on next game start
             runtimeDataSO.PersistedDateTime = DateTime.Now; // this non-Serializable data will be saved to a string field
+            runtimeDataSO.PersistedRuntimeFloats = new List<float> { 1.2f, 5f, -3245.1123f };
             runtimeDataSO.Save();
 
             // Call the explicit method to change a config value at runtime. This method of setting private

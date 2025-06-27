@@ -1,66 +1,60 @@
 using Cysharp.Threading.Tasks;
+using Salo.SimpleJSON;
 using System;
 using System.Collections.Generic;
 using System.Reflection;
-using System.Reflection.Emit;
+using UnityEngine;
+using UnityEngine.Pool;
 
 namespace Salo.Infrastructure
 {
-    public static class PersistenceHelper
+    public static partial class PersistenceHelper
     {
-        // Store dynamically created wrapper types so they can be reused. These
-        // are classes with only the [Persisted] fields from the original.
-        private static Dictionary<Type, Type> wrapperTypes = new();
+        // For each persistable type, cache the list of non-[Persisted] fields
+        // to avoid using reflection every time to get the fields.
+        private static readonly Dictionary<Type, string[]> nonPersistedFields = new();
 
-        // Get an instance (of a dynamically created type) with only [Persisted] fields
-        public static object GetPersistedObject(IPersistable persistable)
+        // Get a JSON string of only the [Persisted] fields
+        public static string GetPersistedJson(IPersistable persistable)
         {
-            var wrapperType = getWrapperType(persistable.GetType());
-            var persistedObject = Activator.CreateInstance(wrapperType);
+            // Convert all to JSON to leverage Unity's JSON coversion
+            var fullJson = JsonUtility.ToJson(persistable);
 
-            // Copy the values of [Persisted] fields
-            var fieldInfos = persistable.GetType().GetFields(BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic);
+            // Parse into SimpleJSON's JSONObject so it can be operated on
+            var jsonObject = JSON.Parse(fullJson) as JSONObject;
 
-            foreach (FieldInfo fieldInfo in fieldInfos)
+            // Remove the non-[Persisted] fields
+            var nonPersistedFieldNames = getNonPersisedFields(persistable.GetType());
+            foreach (var key in nonPersistedFieldNames)
             {
-                // Process only [Persisted] fields
-                if (!Attribute.IsDefined(fieldInfo, typeof(PersistedAttribute))) continue;
-
-                var wrapperFieldInfo = wrapperType.GetField(fieldInfo.Name);
-                wrapperFieldInfo.SetValue(persistedObject, fieldInfo.GetValue(persistable));
+                jsonObject.Remove(key);
             }
 
-            return persistedObject;
+            return jsonObject.ToString();
         }
 
-        // Get the dynamically created wrapper Type. Create a new one if needed
-        private static Type getWrapperType(Type persistableType)
+        private static string[] getNonPersisedFields(Type type)
         {
-            if (wrapperTypes.ContainsKey(persistableType))
+            if (nonPersistedFields.ContainsKey(type))
             {
-                return wrapperTypes[persistableType];
+                return nonPersistedFields[type];
             }
 
-            var typeName = persistableType.Name + "Wrapper";
+            var list = ListPool<string>.Get();
+            list.Clear();
 
-            var typeBuilder = AssemblyBuilder
-                .DefineDynamicAssembly(new AssemblyName("RuntimePersistence"), AssemblyBuilderAccess.Run)
-                .DefineDynamicModule("PersistenceModule")
-                .DefineType(typeName, TypeAttributes.Public | TypeAttributes.Class);
-
-            var fieldInfos = persistableType.GetFields(BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic);
+            var fieldInfos = type.GetFields(BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic);
             foreach (FieldInfo fieldInfo in fieldInfos)
             {
-                if (Attribute.IsDefined(fieldInfo, typeof(PersistedAttribute)))
+                // Save fields without the [Persisted] attribute
+                if (!Attribute.IsDefined(fieldInfo, typeof(PersistedAttribute)))
                 {
-                    typeBuilder.DefineField(fieldInfo.Name, fieldInfo.FieldType, FieldAttributes.Public);
+                    list.Add(fieldInfo.Name);
                 }
             }
 
-            var wrapperType = typeBuilder.CreateType();
-            wrapperTypes[persistableType] = wrapperType;
-
-            return wrapperType;
+            nonPersistedFields[type] = list.ToArray();
+            return nonPersistedFields[type];
         }
 
         // If a persistable is cast as IPersistable, calling Save or Load on it will call the extension method instead
@@ -106,4 +100,67 @@ namespace Salo.Infrastructure
             }
         }
     }
+
+    //public static partial class PersistenceHelper
+    //{
+    //    // Obsolete code is moved here
+
+    //    // Store dynamically created wrapper types so they can be reused. These
+    //    // are classes with only the [Persisted] fields from the original.
+    //    [Obsolete("Used by the obsolete GetPersistedObject method")]
+    //    private static Dictionary<Type, Type> wrapperTypes = new();
+
+    //    // Get an instance (of a dynamically created type) with only [Persisted] fields
+    //    [Obsolete("Use GetPersistedJson instead. This uses System.Reflection.Emit which is unsupooreted on IL2CPP")]
+    //    public static object GetPersistedObject(IPersistable persistable)
+    //    {
+    //        var wrapperType = getWrapperType(persistable.GetType());
+    //        var persistedObject = Activator.CreateInstance(wrapperType);
+
+    //        // Copy the values of [Persisted] fields
+    //        var fieldInfos = persistable.GetType().GetFields(BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic);
+
+    //        foreach (FieldInfo fieldInfo in fieldInfos)
+    //        {
+    //            // Process only [Persisted] fields
+    //            if (!Attribute.IsDefined(fieldInfo, typeof(PersistedAttribute))) continue;
+
+    //            var wrapperFieldInfo = wrapperType.GetField(fieldInfo.Name);
+    //            wrapperFieldInfo.SetValue(persistedObject, fieldInfo.GetValue(persistable));
+    //        }
+
+    //        return persistedObject;
+    //    }
+
+    //    // Get the dynamically created wrapper Type. Create a new one if needed
+    //    [Obsolete("Used by the obsolete GetPersistedObject method")]
+    //    private static Type getWrapperType(Type persistableType)
+    //    {
+    //        if (wrapperTypes.ContainsKey(persistableType))
+    //        {
+    //            return wrapperTypes[persistableType];
+    //        }
+
+    //        var typeName = persistableType.Name + "Wrapper";
+
+    //        var typeBuilder = AssemblyBuilder
+    //            .DefineDynamicAssembly(new AssemblyName("RuntimePersistence"), AssemblyBuilderAccess.Run)
+    //            .DefineDynamicModule("PersistenceModule")
+    //            .DefineType(typeName, TypeAttributes.Public | TypeAttributes.Class);
+
+    //        var fieldInfos = persistableType.GetFields(BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic);
+    //        foreach (FieldInfo fieldInfo in fieldInfos)
+    //        {
+    //            if (Attribute.IsDefined(fieldInfo, typeof(PersistedAttribute)))
+    //            {
+    //                typeBuilder.DefineField(fieldInfo.Name, fieldInfo.FieldType, FieldAttributes.Public);
+    //            }
+    //        }
+
+    //        var wrapperType = typeBuilder.CreateType();
+    //        wrapperTypes[persistableType] = wrapperType;
+
+    //        return wrapperType;
+    //    }
+    //}
 }

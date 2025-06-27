@@ -33,9 +33,8 @@ namespace Salo.Infrastructure
         /// </summary>
         public static void Save(this IPersistable persistable)
         {
-            // Get an object (and then JSON) with only [Persisted] fields
-            var persistedObject = PersistenceHelper.GetPersistedObject(persistable);
-            var json = JsonUtility.ToJson(persistedObject);
+            // Get a JSON string with only [Persisted] fields
+            var json = PersistenceHelper.GetPersistedJson(persistable);
 
             DataPersistenceManager.Instance.Save(persistable, json);
         }
